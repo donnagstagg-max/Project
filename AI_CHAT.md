@@ -364,3 +364,6 @@ The saved transcript timestamps confirm the 3:09 PM boundary at the “add comme
 
 ### Assistant
 I replaced everything from line 193 onward with the chronological chat from 3:09 PM, based on the saved session transcript. The tail now starts with the original app.js comments request and includes the subsequent HTML/CSS comment requests, duplicate-card discussion and fix, and later transcript-correction exchanges.
+
+### Assistant
+The py launcher is working: the server served the app and all CSV files successfully at http://localhost:8000. The exit code 1 is from pressing Ctrl+C to stop it; the missing favicon.ico is harmless. Run py -m http.server 8000 again when you want to reopen the app.
