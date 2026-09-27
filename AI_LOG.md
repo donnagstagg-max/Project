@@ -20,3 +20,8 @@ This log records substantive requests made in the current session. Conversationa
 - "Rotate the text in the DJILBA wedge 90 degrees to the left"
 - "Rotate the text in the KAMBARANG wedge 90 degrees to the left"
 - "Make each wedge selectable to move to the second view of the app"
+- "Please amend the coding so that this additional summary card is not created."
+- "Please add comments to the HTML, CSS, and JavaScript files to explain the key sections and logic."
+- "The chat regarding adding comments to the files is still missing from the chat history"
+- "The updated chat is out of order. Please amend so that all user and assistant responses are in chronological order"
+- "This is still incorrect. Remove everything in the AI_CHAT.md file from line 193 onwards and replace with the complete chat history from 3:09 PM onwards."

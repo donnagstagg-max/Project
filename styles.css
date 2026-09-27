@@ -1,3 +1,5 @@
+/* Global design tokens and colour variables used throughout the app.
+   These values keep the UI consistent across panels, buttons, text, and shadows. */
 :root {
   --bg: #f7f1e3;
   --panel: #fffdf9;
@@ -13,6 +15,7 @@
   --radius: 20px;
 }
 
+/* Base reset and page-wide styling for the full app shell. */
 * {
   box-sizing: border-box;
 }
@@ -35,6 +38,7 @@ button, input, a {
   font: inherit;
 }
 
+/* Main application container that wraps the header and all dynamic screens. */
 .app-shell {
   width: min(1100px, 100%);
   min-height: 850px;
@@ -45,6 +49,7 @@ button, input, a {
   padding: 18px 18px 30px;
 }
 
+/* Header styling for the top navigation bar and back button. */
 .topbar {
   display: flex;
   align-items: center;
@@ -79,6 +84,7 @@ button, input, a {
   display: none;
 }
 
+/* Shared layout styling for each screen view in the app. */
 .view {
   display: flex;
   flex-direction: column;
@@ -117,6 +123,7 @@ button, input, a {
   color: var(--primary-dark);
 }
 
+/* Seasonal wheel styling: central circular layout, SVG wheel, text labels, and hub. */
 .season-wheel {
   position: relative;
   width: min(82vw, 680px);
@@ -278,6 +285,7 @@ button, input, a {
   line-height: 1.55;
 }
 
+/* Second-view map layout and ILUA selection area styling. */
 .map-panel {
   display: grid;
   grid-template-columns: 1fr;
@@ -285,6 +293,7 @@ button, input, a {
   gap: 22px;
 }
 
+/* Circular ILUA map and its surrounding nodes positioned around the centre. */
 .ilua-map {
   position: relative;
   width: min(80vw, 520px);
@@ -380,6 +389,7 @@ button, input, a {
   line-height: 1.5;
 }
 
+/* Category cards and their hover states for selecting plant type. */
 .category-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -414,6 +424,7 @@ button, input, a {
   margin-bottom: 8px;
 }
 
+/* Species list styling for the final filtered results view. */
 .species-list {
   display: grid;
   gap: 18px;
@@ -504,6 +515,7 @@ button, input, a {
   accent-color: var(--primary);
 }
 
+/* Empty-state panel used when no data matches the selected filters. */
 .empty-state {
   background: var(--panel);
   border: 1px solid var(--border);
@@ -513,6 +525,7 @@ button, input, a {
   color: var(--muted);
 }
 
+/* Responsive adjustments to keep the interface usable on smaller tablet/mobile displays. */
 @media (max-width: 760px) {
   body {
     padding: 10px;

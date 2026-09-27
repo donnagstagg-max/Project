@@ -1,21 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <!-- Page metadata and global stylesheet linking. -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Noongar Plant Finder</title>
+    <title>The seasons, regions, and plants of the Noongar people</title>
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
+    <!-- Main app shell: wraps the header and all dynamic screen content. -->
     <div class="app-shell">
+      <!-- Top bar containing the back navigation button and the page title. -->
       <header class="topbar">
         <button id="backButton" class="back-button hidden" type="button" aria-label="Go back">← Back</button>
-        <h1>Noongar Plant Finder</h1>
+        <h1>The seasons, regions, and plants of the Noongar people</h1>
       </header>
 
+      <!-- This container is populated dynamically by JavaScript with the season, ILUA, category, and species views. -->
       <main id="appView" aria-live="polite"></main>
     </div>
 
+    <!-- JavaScript that loads CSV data, renders each screen, and handles navigation and interaction. -->
     <script src="app.js"></script>
   </body>
 </html>

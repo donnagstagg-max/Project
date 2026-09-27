@@ -1,3 +1,5 @@
+// Core configuration for the seasonal wheel and the rest of the app.
+// These arrays define the order of seasons and ILUA areas used across the UI.
 const SEASON_ORDER = ['s1', 's2', 's3', 's4', 's5', 's6'];
 const ILUA_ORDER = ['i1', 'i2', 'i3', 'i4', 'i5', 'i6'];
 const SEASON_COLORS = {
@@ -26,6 +28,7 @@ let seasonLookup = {};
 let iluaLookup = {};
 let speciesCatalog = [];
 
+// App startup: load all CSV datasets, build lookup tables, then render the first screen.
 async function initApp() {
   try {
     const [seasonRows, iluaRows, foodRows, medRows, wildRows] = await Promise.all([
@@ -55,6 +58,7 @@ async function initApp() {
   }
 }
 
+// Central page switcher. It decides which screen to show based on the current navigation state.
 function render() {
   const view = STATE.navStack[STATE.navStack.length - 1];
   const appView = document.getElementById('appView');
@@ -110,6 +114,8 @@ function describeAnnularSector(cx, cy, innerRadius, outerRadius, startAngle, end
   ].join(' ');
 }
 
+// Builds the seasonal wheel screen. It creates six SVG wedges, places the seasonal data on them,
+// and applies per-season rotation adjustments so the labels align with the wheel.
 function renderSeasonView() {
   const cx = 340;
   const cy = 340;
@@ -149,13 +155,11 @@ function renderSeasonView() {
     `;
   }).join('');
 
-  const selectedSeason = STATE.selectedSeason ? seasonLookup[STATE.selectedSeason] : null;
-
   return `
     <div class="view">
       <div class="view-header">
         <h2>Select a season</h2>
-        <p>Choose the Noongar season to begin your plant search.</p>
+        <p>The Noongar year is divided into six seasons which represent a timetable of future events, determined by what is changing and happening in nature.</p>
       </div>
 
       <div class="season-wheel" aria-label="Season selection wheel">
@@ -171,19 +175,11 @@ function renderSeasonView() {
           </div>
         </div>
       </div>
-
-      ${selectedSeason ? `
-        <div class="season-details">
-          <h3>${selectedSeason.season_name}</h3>
-          <p><strong>Months:</strong> ${selectedSeason.season_months}</p>
-          <p><strong>Weather:</strong> ${selectedSeason.season_weather}</p>
-          <p><strong>Information:</strong> ${selectedSeason.season_info}</p>
-        </div>
-      ` : ''}
     </div>
   `;
 }
 
+// Creates the ILUA selection screen. It presents each ILUA area as a selectable map node.
 function renderIluaView() {
   const iluaCards = ILUA_ORDER.map((id, index) => `
     <button class="ilua-node ${STATE.selectedILUA === id ? 'selected' : ''}" type="button" data-ilua="${id}" style="--angle:${(index * 360) / ILUA_ORDER.length}deg;">
@@ -195,7 +191,7 @@ function renderIluaView() {
     <div class="view">
       <div class="view-header">
         <h2>Select an ILUA area</h2>
-        <p>Choose the Noongar ILUA area for the current season.</p>
+        <p>Choose a Noongar ILUA area to continue exploring.</p>
       </div>
 
       <div class="selection-summary">
@@ -223,6 +219,7 @@ function renderIluaView() {
   `;
 }
 
+// Shows the category selection screen for bush food, bush medicine, and wildflowers.
 function renderCategoryView() {
   return `
     <div class="view">
@@ -248,6 +245,7 @@ function renderCategoryView() {
   `;
 }
 
+// Displays the filtered species list for the selected season, ILUA area, and category.
 function renderSpeciesView() {
   const species = getFilteredSpecies();
 
@@ -300,6 +298,7 @@ function renderSpeciesView() {
   `;
 }
 
+// Attaches click handlers to each interactive element in the current view.
 function bindSeasonEvents() {
   document.querySelectorAll('.season-wedge').forEach((wedge) => {
     wedge.style.cursor = 'pointer';
@@ -376,6 +375,7 @@ function getIluaSummary(species) {
     .join(', ');
 }
 
+// Converts the CSV rows into lookup objects so data can be retrieved by ID quickly.
 function buildSeasonLookup(rows) {
   return rows.reduce((acc, row) => {
     acc[row.season_id] = row;
@@ -418,12 +418,14 @@ function buildSpeciesCatalog(foodRows, medRows, wildRows) {
   });
 }
 
+// Fetches and parses local CSV files into JavaScript objects for the app.
 function fetchCSV(filePath) {
   return fetch(filePath)
     .then((response) => response.text())
     .then((text) => parseCSV(text));
 }
 
+// Parses the CSV format used by the project, including quoted values and multiline content.
 function parseCSV(text) {
   const rows = [];
   let current = '';
@@ -481,6 +483,7 @@ function parseCSV(text) {
   });
 }
 
+// Restores the checked state for species so “Found” selections persist between page reloads.
 function loadCheckedState() {
   try {
     const value = localStorage.getItem('noongarPlantFinderChecked');
