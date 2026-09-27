@@ -19,3 +19,4 @@ This log records substantive requests made in the current session. Conversationa
 - "Rotate the text in the MAKURU wedge 90 degrees to the right"
 - "Rotate the text in the DJILBA wedge 90 degrees to the left"
 - "Rotate the text in the KAMBARANG wedge 90 degrees to the left"
+- "Make each wedge selectable to move to the second view of the app"

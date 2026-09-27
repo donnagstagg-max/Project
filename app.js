@@ -301,9 +301,10 @@ function renderSpeciesView() {
 }
 
 function bindSeasonEvents() {
-  document.querySelectorAll('.season-item').forEach((button) => {
-    button.addEventListener('click', () => {
-      STATE.selectedSeason = button.dataset.season;
+  document.querySelectorAll('.season-wedge').forEach((wedge) => {
+    wedge.style.cursor = 'pointer';
+    wedge.addEventListener('click', () => {
+      STATE.selectedSeason = wedge.dataset.season;
       STATE.navStack.push('ilua');
       render();
     });

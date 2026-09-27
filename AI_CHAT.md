@@ -183,3 +183,9 @@ Rotate the text in the KAMBARANG wedge 90 degrees to the left
 
 ### Assistant
 I’m rotating the Kambarang wedge text 90 degrees to the left while keeping the other seasonal orientations as previously set.
+
+### User
+Make each wedge selectable to move to the second view of the app
+
+### Assistant
+I’m binding click events to each wedge so selecting a season takes the user directly to the ILUA selection view.
