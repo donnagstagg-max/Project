@@ -665,6 +665,36 @@ Excellent, thanks
 You’re welcome.
 
 ### User
+make the photos clickable in order to show an enlarged version of the photograph
+
+### Assistant
+I made species photos clickable using accessible zoom buttons that open an enlarged, uncropped image in a modal dialog. The dialog closes through its Close button, Escape, or backdrop click. In the browser, I verified a species photo loaded at 512x360, opened in the dialog, and closed successfully. Editor diagnostics report no errors.
+
+### User
+The photos for wildflower have not populated
+
+### Assistant
+I found the current CSV uses `category=wildflower` (singular), while the photo-path conversion only recognized `wildflowers` (plural). That left Windows paths as unusable image sources. I changed the catalog to convert any absolute Windows photo path to a local `species_photos/` URL, independent of category spelling. `app.js` reports no errors, and a representative local Wildflower photo returns HTTP 200.
+
+### User
+Populate the photo placeholders in the species list for Wildflower with the photos found at the hyperlink location in the photo_hlink column in the file named wildflower_data_master.csv
+
+### Assistant
+I copied all 144 Wildflower photo files referenced by `wildflower_data_master.csv` into `species_photos/` and extended the catalog conversion to handle the CSV's `wildflowers` category paths. All 144 local image URLs returned HTTP 200, and `app.js` reports no errors.
+
+### User
+Populate the photo placeholders in the species list for Bush Food with the photos found at the hyperlink location in the photo_hlink column in the file named bush_food_data_master.csv
+
+### Assistant
+I found that all 41 unique Bush Food photo_hlink values in the CSV point to local Windows paths, which browsers cannot use as image URLs. All source files were present. I copied them into `species_photos/` and updated the Bush Food catalog records to use encoded project-relative URLs. All 41 local image URLs returned HTTP 200, and `app.js` reports no errors.
+
+### User
+Populate the photo placeholders in the species list for Bush Medicine with the photos found at the hyperlink location in the photo_hlink column in the file named bush_med_data_master.csv
+
+### Assistant
+I copied all 42 unique Bush Medicine photos referenced by the CSV into `species_photos/` and extended the catalog path conversion so Bush Medicine Windows file paths become encoded project-relative URLs. All 42 image URLs returned HTTP 200 through the local server, and `app.js` reports no errors.
+
+### User
 Move the ILUA info grid from below the map to above the map.
 Also change the layout so they are in two rows of three
 
@@ -768,3 +798,63 @@ Remove the "View species photo" hyperlinks located beneath the species_info fiel
 
 ### Assistant
 I removed the “View species photo” anchor from the species cards and removed its unused `.species-link` styling. Species photos remain displayed in the cards. Editor diagnostics report no errors.
+
+### User
+Reduce the spacing between common_name and Noongar name: noongar_name
+
+### Assistant
+I reduced the common-name line's bottom margin to 3px in [styles.css](styles.css), leaving the Noongar-name line's font style and spacing below it unchanged. The app and stylesheet diagnostics report no errors.
+
+### User
+Perfect, thanks
+
+### Assistant
+You’re welcome.
+
+### User
+Remove "Noongar name: noongar_name" from wildflower list
+
+### Assistant
+I hid the Noongar-name subtitle for `wildflower` and `wildflowers` species cards in [app.js](app.js). Other categories still display the Noongar name when available. `app.js` reports no errors.
+
+### User
+On the categories view, on the Bush Food category card, under "Bush Food" write "Santalum acuminatum - Quandong" in the same font style and size
+
+### Assistant
+I added “Santalum acuminatum - Quandong” below the Bush Food label in [app.js](app.js), using the category card's inherited font style and size. `app.js` reports no errors.
+
+### User
+Make the added text two points smaller than "Bush Food"
+
+### Assistant
+I made the Quandong subtitle 2 CSS points smaller than the Bush Food label using `font-size: calc(1em - 2pt)` in [styles.css](styles.css). Font family and weight remain inherited. Editor diagnostics report no errors.
+
+### User
+Enlarge the gap between the photo and "Bush Food"
+
+### Assistant
+I added an 18px bottom margin specifically to the Bush Food category photo in [styles.css](styles.css). This increases the space before the “Bush Food” label without altering the other category cards. The stylesheet diagnostic reports no errors.
+
+### User
+Do the same for Bush Medicine card, adding the text "Solanum lasiophyllum - Flannel Bush" below "Bush Medicine"
+
+### Assistant
+I added “Solanum lasiophyllum - Flannel Bush” below the Bush Medicine label using the same `.category-subtitle` styling as the Bush Food subtitle. I also applied the same 18px gap below both category photos. `app.js` and `styles.css` report no errors.
+
+### User
+Finally, repeat for the Wildflower card, adding the text "Caladenia macrostylis - Leaping Spider Orchid" below "Wildflower"
+
+### Assistant
+I added “Caladenia macrostylis - Leaping Spider Orchid” below the Wildflower label using the shared `.category-subtitle` style and applied the same photo spacing as the other category cards. `app.js` and `styles.css` report no errors.
+
+### User
+Amend the category "Wildflower" to "Wildflowers"
+
+### Assistant
+I changed the displayed category label to “Wildflowers” in [app.js](app.js), preserving the internal `wildflower` key used by CSV filtering. `app.js` reports no errors.
+
+### User
+Make the text of the summary pills on each view all uppercase
+
+### Assistant
+I added `text-transform: uppercase` to the shared `.summary-pill` rule in [styles.css](styles.css), so summary pills are displayed in uppercase throughout the app. The stylesheet diagnostic reports no errors.

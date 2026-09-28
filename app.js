@@ -22,7 +22,7 @@ const CATEGORY_INFO = {
     photoAlt: 'Solanum lasiophyllum'
   },
   wildflower: {
-    label: 'Wildflower',
+    label: 'Wildflowers',
     photo: 'category_photos/Caladenia%20macrostylis.jpg',
     photoAlt: 'Caladenia macrostylis'
   }
@@ -277,6 +277,9 @@ function renderCategoryView() {
             <button class="category-card" type="button" data-category="${key}">
               <img class="category-photo" src="${photoSrc}" alt="${photoAlt}" loading="lazy" onerror="this.onerror=null;this.src='${placeholderImage(item.label)}'" />
               <div>${item.label}</div>
+              ${key === 'bush_food' ? '<div class="category-subtitle">Santalum acuminatum - Quandong</div>' : ''}
+              ${key === 'bush_medicine' ? '<div class="category-subtitle">Solanum lasiophyllum - Flannel Bush</div>' : ''}
+              ${key === 'wildflower' ? '<div class="category-subtitle">Caladenia macrostylis - Leaping Spider Orchid</div>' : ''}
             </button>
           `;
         }).join('')}
@@ -291,11 +294,6 @@ function renderSpeciesView() {
 
   return `
     <div class="view">
-      <div class="view-header">
-        <h2>${CATEGORY_INFO[STATE.selectedCategory].label} species</h2>
-        <p>${seasonLookup[STATE.selectedSeason].season_name} • ${iluaLookup[STATE.selectedILUA].ilua_name}</p>
-      </div>
-
       <div class="selection-summary">
         <span class="summary-pill">Season: ${seasonLookup[STATE.selectedSeason].season_name}</span>
         <span class="summary-pill">Area: ${iluaLookup[STATE.selectedILUA].ilua_name}</span>
@@ -309,11 +307,13 @@ function renderSpeciesView() {
 
           return `
             <article class="species-card">
-              <img class="species-photo" src="${photoSrc}" alt="${item.species_name}" onerror="this.onerror=null;this.src='${placeholderImage(item.common_name || item.species_name)}'" />
+              <button class="species-photo-button" type="button" aria-label="Enlarge photo: ${item.species_name}" data-photo-alt="${item.species_name}">
+                <img class="species-photo" src="${photoSrc}" alt="${item.species_name}" onerror="this.onerror=null;this.src='${placeholderImage(item.common_name || item.species_name)}'" />
+              </button>
               <div class="species-body">
                 <h3>${item.species_name}</h3>
-                <p class="subtitle">${item.common_name || 'No common name recorded'}</p>
-                <p class="subtitle">Noongar name: ${item.noongar_name || 'Not recorded'}</p>
+                <p class="subtitle common-name">${item.common_name || 'No common name recorded'}</p>
+                ${['wildflower', 'wildflowers'].includes(item.category) ? '' : `<p class="subtitle">Noongar name: ${item.noongar_name || 'Not recorded'}</p>`}
                 <p>${item.species_info || 'No additional species information available.'}</p>
               </div>
               <label class="found-toggle">
@@ -329,6 +329,13 @@ function renderSpeciesView() {
         `}
       </div>
       ${species.length ? '<button class="list-top-button" type="button">Back to top of list</button>' : ''}
+      ${species.length ? `
+        <dialog class="photo-dialog" aria-label="Enlarged species photo">
+          <button class="photo-dialog-close" type="button" aria-label="Close enlarged photo">Close</button>
+          <img class="photo-dialog-image" alt="" />
+          <p class="photo-dialog-caption"></p>
+        </dialog>
+      ` : ''}
     </div>
   `;
 }
@@ -368,6 +375,25 @@ function bindCategoryEvents() {
 function bindSpeciesEvents() {
   document.querySelector('.list-top-button')?.addEventListener('click', () => {
     document.querySelector('.species-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
+  const photoDialog = document.querySelector('.photo-dialog');
+  const enlargedPhoto = photoDialog?.querySelector('.photo-dialog-image');
+  const photoCaption = photoDialog?.querySelector('.photo-dialog-caption');
+
+  document.querySelectorAll('.species-photo-button').forEach((button) => {
+    button.addEventListener('click', () => {
+      const thumbnail = button.querySelector('.species-photo');
+      enlargedPhoto.src = thumbnail.currentSrc || thumbnail.src;
+      enlargedPhoto.alt = button.dataset.photoAlt;
+      photoCaption.textContent = button.dataset.photoAlt;
+      photoDialog.showModal();
+    });
+  });
+
+  document.querySelector('.photo-dialog-close')?.addEventListener('click', () => photoDialog.close());
+  photoDialog?.addEventListener('click', (event) => {
+    if (event.target === photoDialog) photoDialog.close();
   });
 
   document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
@@ -452,14 +478,21 @@ function buildSpeciesCatalog(foodRows, medRows, wildRows) {
       iluaPresence[id] = row[id] ? row[id].toLowerCase() : 'n';
     });
 
+    const category = row.category || 'wildflower';
+    const photoLink = row.photo_hlink || '';
+    const photoFileName = photoLink.split(/[\\/]/).pop();
+    const photoUrl = /^[a-z]:[\\/]/i.test(photoLink)
+      ? `species_photos/${encodeURIComponent(photoFileName)}`
+      : photoLink;
+
     return {
       id: row.species_id,
       species_name: row.species_name || 'Unknown species',
       common_name: row.common_name || '',
       noongar_name: row.noongar_name || '',
-      category: row.category || 'wildflower',
+      category,
       species_info: row.species_info || 'No information supplied.',
-      photo_hlink: row.photo_hlink || '',
+      photo_hlink: photoUrl,
       seasonPresence,
       iluaPresence
     };
