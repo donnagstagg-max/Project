@@ -129,7 +129,7 @@ function renderSeasonView() {
     const endAngle = startAngle + 60;
     const path = describeAnnularSector(cx, cy, innerRadius, outerRadius, startAngle, endAngle);
     const midAngle = startAngle + 30;
-    const labelRadius = 235;
+    const labelRadius = 245;
     const labelPoint = polarToCartesian(cx, cy, labelRadius, midAngle);
     const isBirak = id === 's1';
     const isBunuru = id === 's2';
@@ -170,7 +170,8 @@ function renderSeasonView() {
         </svg>
         <div class="season-wheel-center">
           <div>
-            <div class="main-label">SIX</div>
+            <div class="main-label">NOONGAR</div>
+            <div class="mini-title">SIX</div>
             <div class="mini-title">SEASONS</div>
           </div>
         </div>

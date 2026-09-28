@@ -584,3 +584,21 @@ In [styles.css](styles.css), `.ilua-node` already uses `text-align: center` for 
 ```
 
 If the label is a single line with automatic height, the current symmetric vertical padding already places it approximately in the middle. Flex alignment is most useful when the label has a fixed height or wraps onto multiple lines. I have not changed the CSS.
+
+### User
+which section of coding controls the layout and formatting of the ILUA information boxes beneath the map?
+
+### Assistant
+The boxes are generated in `renderIluaView()` in [app.js](app.js#L225), inside `.ilua-info-grid`, with one `.info-card` per ILUA. Their styling is in [styles.css](styles.css#L345): `.ilua-info-grid` controls the grid columns and spacing; `.info-card` controls each box's background, border, padding, radius, and shadow; `.info-card h3` controls the area-name heading; and `.info-card p` controls the information text and line spacing.
+
+### User
+How would I create more space after the field season_info2
+
+### Assistant
+The season fields are SVG text elements in `renderSeasonView()` in [app.js](app.js#L151). `season_info2` is the final line at `y="72"`. If you mean more blank room between that last line and the inner edge of the wheel, increase `labelRadius` slightly (currently 235) to move the whole set of labels outward while preserving the spacing between fields. Changing only `season_info2`'s `y` coordinate can shift it sideways in wedges whose text group is rotated 90 degrees. I have not changed the code.
+
+### User
+Perfect, I have amended to 245 and that has done exactly what I wanted
+
+### Assistant
+Glad that worked. The label group is now positioned to leave the extra space you wanted after `season_info2`.

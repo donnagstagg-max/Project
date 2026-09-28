@@ -32,3 +32,5 @@ This log records substantive requests made in the current session. Conversationa
 - "slightly increase the size of the map image"
 - "Increase it again"
 - "how do I align the label text so it is both vertically and horizontally centred"
+- "which section of coding controls the layout and formatting of the ILUA information boxes beneath the map?"
+- "How would I create more space after the field season_info2"
