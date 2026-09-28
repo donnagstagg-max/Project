@@ -55,3 +55,7 @@ This log records substantive requests made in the current session. Conversationa
 - "C:\\Users\\chell\\Desktop\\Species Photos\\Solanum lasiophyllum.jpg"
 - "This is the hyperlink for the photo for the wildflower category"
 - "C:\\Users\\chell\\Desktop\\Species Photos\\Caladenia macrostylis.jpg"
+- "Add a navigation button at the bottom of the species view that allows users to jump back to the top of the listings"
+- "Sort the species so they are listed alphabetically by the species_name field"
+- "Below the line stating the common_name field, add the below in the same font style: Noongar name: noongar_name"
+- "Remove the \"View species photo\" hyperlinks located beneath the species_info field"

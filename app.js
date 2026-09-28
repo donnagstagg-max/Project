@@ -305,8 +305,6 @@ function renderSpeciesView() {
       <div class="species-list">
         ${species.length ? species.map((item) => {
           const checked = Boolean(STATE.checked[item.id]);
-          const seasonsFound = getSeasonSummary(item);
-          const areasFound = getIluaSummary(item);
           const photoSrc = item.photo_hlink || placeholderImage(item.common_name || item.species_name);
 
           return `
@@ -315,12 +313,8 @@ function renderSpeciesView() {
               <div class="species-body">
                 <h3>${item.species_name}</h3>
                 <p class="subtitle">${item.common_name || 'No common name recorded'}</p>
+                <p class="subtitle">Noongar name: ${item.noongar_name || 'Not recorded'}</p>
                 <p>${item.species_info || 'No additional species information available.'}</p>
-                <div class="species-meta">
-                  <span class="meta-tag">Seasons: ${seasonsFound}</span>
-                  <span class="meta-tag">Areas: ${areasFound}</span>
-                </div>
-                <a class="species-link" href="${item.photo_hlink}" target="_blank" rel="noreferrer">View species photo</a>
               </div>
               <label class="found-toggle">
                 <input type="checkbox" data-species-id="${item.id}" ${checked ? 'checked' : ''} />
@@ -334,6 +328,7 @@ function renderSpeciesView() {
           </div>
         `}
       </div>
+      ${species.length ? '<button class="list-top-button" type="button">Back to top of list</button>' : ''}
     </div>
   `;
 }
@@ -371,6 +366,10 @@ function bindCategoryEvents() {
 }
 
 function bindSpeciesEvents() {
+  document.querySelector('.list-top-button')?.addEventListener('click', () => {
+    document.querySelector('.species-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+
   document.querySelectorAll('input[type="checkbox"]').forEach((checkbox) => {
     checkbox.addEventListener('change', (event) => {
       const speciesId = event.target.dataset.speciesId;
@@ -406,7 +405,7 @@ function getFilteredSpecies() {
       species.seasonPresence[STATE.selectedSeason] === 'y' &&
       species.iluaPresence[STATE.selectedILUA] === 'y'
     );
-  });
+  }).sort((first, second) => first.species_name.localeCompare(second.species_name, undefined, { sensitivity: 'base' }));
 }
 
 function getSeasonSummary(species) {
@@ -457,6 +456,7 @@ function buildSpeciesCatalog(foodRows, medRows, wildRows) {
       id: row.species_id,
       species_name: row.species_name || 'Unknown species',
       common_name: row.common_name || '',
+      noongar_name: row.noongar_name || '',
       category: row.category || 'wildflower',
       species_info: row.species_info || 'No information supplied.',
       photo_hlink: row.photo_hlink || '',

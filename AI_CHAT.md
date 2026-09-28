@@ -743,3 +743,28 @@ C:\Users\chell\Desktop\Species Photos\Caladenia macrostylis.jpg
 
 ### Assistant
 I copied the supplied photo into `category_photos/Caladenia macrostylis.jpg` and configured the Wildflower tile to use that local image with descriptive alt text. The image URL returns HTTP 200 from the local server, and `app.js` reports no editor errors.
+
+### User
+Add a navigation button at the bottom of the species view that allows users to jump back to the top of the listings
+
+### Assistant
+I added a “Back to top of list” button after the species cards. It appears when matching listings exist and smoothly scrolls to the top of `.species-list`. The app and stylesheet diagnostics report no errors.
+
+### User
+Sort the species so they are listed alphabetically by the species_name field
+
+### Assistant
+I sorted the filtered species array by `species_name` before rendering, using a case-insensitive alphabetical comparison. `app.js` reports no errors.
+
+### User
+Below the line stating the common_name field, add the below in the same font style:
+Noongar name: noongar_name
+
+### Assistant
+I added `noongar_name` to the normalized species catalog and render it below the common-name line using the same `.subtitle` style in [app.js](app.js). If a species has no Noongar name in its CSV row, the display says “Not recorded.” `app.js` reports no errors.
+
+### User
+Remove the "View species photo" hyperlinks located beneath the species_info field
+
+### Assistant
+I removed the “View species photo” anchor from the species cards and removed its unused `.species-link` styling. Species photos remain displayed in the cards. Editor diagnostics report no errors.
