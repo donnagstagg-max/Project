@@ -858,3 +858,9 @@ Make the text of the summary pills on each view all uppercase
 
 ### Assistant
 I added `text-transform: uppercase` to the shared `.summary-pill` rule in [styles.css](styles.css), so summary pills are displayed in uppercase throughout the app. The stylesheet diagnostic reports no errors.
+
+### User
+excellent thanks
+
+### Assistant
+You’re welcome.
