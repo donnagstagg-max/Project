@@ -665,6 +665,12 @@ Excellent, thanks
 You’re welcome.
 
 ### User
+create a README.md file that explains to users how to use the app
+
+### Assistant
+I created [README.md](README.md) with instructions for starting the app locally, navigating seasons, ILUA areas, categories, and species, enlarging photos, using Found checkboxes and navigation controls, and running offline with the project assets. The README diagnostic reports no errors.
+
+### User
 make the photos clickable in order to show an enlarged version of the photograph
 
 ### Assistant

@@ -73,3 +73,4 @@ This log records substantive requests made in the current session. Conversationa
 - "Finally, repeat for the Wildflower card, adding the text \"Caladenia macrostylis - Leaping Spider Orchid\" below \"Wildflower\""
 - "Amend the category \"Wildflower\" to \"Wildflowers\""
 - "Make the text of the summary pills on each view all uppercase"
+- "create a README.md file that explains to users how to use the app"
