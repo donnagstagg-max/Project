@@ -181,11 +181,30 @@ function renderSeasonView() {
 
 // Creates the ILUA selection screen. It presents each ILUA area as a selectable map node.
 function renderIluaView() {
-  const iluaCards = ILUA_ORDER.map((id, index) => `
-    <button class="ilua-node ${STATE.selectedILUA === id ? 'selected' : ''}" type="button" data-ilua="${id}" style="--angle:${(index * 360) / ILUA_ORDER.length}deg;">
-      ${iluaLookup[id].ilua_name}
-    </button>
-  `).join('');
+  const labelPositions = {
+    i1: { x: 60, y: 40 },
+    i2: { x: 35, y: 58 },
+    i3: { x: 19, y: 76 },
+    i4: { x: 58, y: 79 },
+    i5: { x: 26, y: 35 },
+    i6: { x: 24, y: 18 }
+  };
+
+  const iluaCards = ILUA_ORDER.map((id) => {
+    const { x, y } = labelPositions[id];
+    const widthMap = {
+      i1: 'width: 90px;',
+      i4: 'width: 80px;',
+      i5: 'width: 72px;',
+      i6: 'width: 72px;'
+    };
+    const widthStyle = widthMap[id] || '';
+    return `
+      <button class="ilua-node ${STATE.selectedILUA === id ? 'selected' : ''}" type="button" data-ilua="${id}" style="left:${x}%; top:${y}%; ${widthStyle}">
+        ${iluaLookup[id].ilua_name}
+      </button>
+    `;
+  }).join('');
 
   return `
     <div class="view">
@@ -200,9 +219,6 @@ function renderIluaView() {
 
       <div class="map-panel">
         <div class="ilua-map" aria-label="ILUA map selection">
-          <div class="map-center">
-            <h3>ILUA Areas</h3>
-          </div>
           ${iluaCards}
         </div>
 

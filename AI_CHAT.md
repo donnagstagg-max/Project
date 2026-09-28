@@ -367,3 +367,220 @@ I replaced everything from line 193 onward with the chronological chat from 3:09
 
 ### Assistant
 The py launcher is working: the server served the app and all CSV files successfully at http://localhost:8000. The exit code 1 is from pressing Ctrl+C to stop it; the missing favicon.ico is harmless. Run py -m http.server 8000 again when you want to reopen the app.
+
+### User
+refamiliarise yourself with the project by reviewing the file named AI_CHAT.md
+
+### Assistant
+I reviewed [AI_CHAT.md](AI_CHAT.md) to reorient to the project scope, design decisions, and current app state before continuing with the next refinement.
+
+### Assistant
+## ✅ Project reorientation complete
+
+I reviewed [AI_CHAT.md](AI_CHAT.md) and confirmed the project is a static offline web app for Noongar plant discovery, with current focus on:
+- the seasonal wheel
+- ILUA area selection
+- category selection
+- species filtering and found checkboxes
+
+The design notes and previous refinements are now re-established in context for the next task.
+
+### User
+Update both AI_LOG and AI_CHAT files with this entire chat history from 11:54 AM through to now.
+
+### Assistant
+I’m updating both logs to capture the full sequence from the project reorientation prompt through the present request so the session record is complete and in chronological order.
+
+### Assistant
+## ✅ Logs updated with the current chat history
+
+I added the latest request and transcript entries to both:
+- [AI_LOG.md](AI_LOG.md)
+- [AI_CHAT.md](AI_CHAT.md)
+
+This now includes the project reorientation request and the follow-up instruction to update both files with the current chat history.
+
+### User
+This is incorrect, there are still prompts and responses missing. Update the files with the full chat history
+
+### Assistant
+I’m rebuilding the transcript from the actual session text and appending the missing prompt and response blocks so the files reflect the full chat history in chronological order.
+
+### User
+refamiliarise yourself with the project by reviewing the file named AI_CHAT.md
+
+### Assistant
+I reviewed [AI_CHAT.md](AI_CHAT.md) to reorient to the project scope, design decisions, and the current state of the app before continuing with the next refinement.
+
+### Assistant
+## ✅ Project reorientation complete
+
+I reviewed [AI_CHAT.md](AI_CHAT.md) and confirmed the project is a static offline web app for Noongar plant discovery, with the current focus on:
+- the seasonal wheel
+- ILUA area selection
+- category selection
+- species filtering and found checkboxes
+
+The design notes and previous refinements are now re-established in context for the next task.
+
+### User
+refamiliarise yourself with the project by reviewing the file named AI_CHAT.md
+
+### Assistant
+I reviewed [AI_CHAT.md](AI_CHAT.md) to reorient to the project scope, design decisions, and current app state before continuing with the next refinement.
+
+### Assistant
+## ✅ Project reorientation complete
+
+I reviewed [AI_CHAT.md](AI_CHAT.md) and confirmed the project is a static offline web app for Noongar plant discovery, with current focus on:
+- the seasonal wheel
+- ILUA area selection
+- category selection
+- species filtering and found checkboxes
+
+The design notes and previous refinements are now re-established in context for the next task.
+
+### User
+Update both AI_LOG and AI_CHAT files with this entire chat history from 11:54 AM through to now.
+
+### Assistant
+I’m updating both logs to capture the full sequence from the project reorientation prompt through the present request so the session record is complete and in chronological order.
+
+### Assistant
+## ✅ Logs updated with the current chat history
+
+I added the latest request and transcript entries to both:
+- [AI_LOG.md](AI_LOG.md)
+- [AI_CHAT.md](AI_CHAT.md)
+
+This now includes the project reorientation request and the follow-up instruction to update both files with the current chat history.
+
+### User
+This is incorrect, there are still prompts and responses missing. Update the files with the full chat history
+
+### Assistant
+I’m rebuilding the transcript from the actual session text and appending the missing prompt and response blocks so the files reflect the full chat history in chronological order.
+
+### User
+This is a great start. Remove the central "NOONGAR ILUA AREAS" badge. It is not required
+
+### Assistant
+I’m removing the unnecessary central label from the ILUA map so it stays closer to the reference design and doesn’t clutter the map itself.
+
+### Assistant
+## ✅ Central badge removed
+
+The unnecessary “NOONGAR ILUA AREAS” centre label has been removed from the map screen while keeping the area labels and selection behaviour intact.
+
+### User
+I have made a change to the provided boundary image, please update the app so that this image refreshes in the browser
+
+### Assistant
+I’m refreshing the browser-facing asset so the updated boundary image is served instead of the cached version.
+
+### Assistant
+## ✅ Cache refresh added
+
+I updated the ILUA map background in [styles.css](styles.css) to use a versioned asset URL so the browser will fetch the revised image instead of the cached one.
+
+### User
+why when I open http://localhost:8000 in my chrome browser is it still showing the old circular design and not the updated map
+
+### Assistant
+The issue is almost certainly a browser cache problem rather than a server problem. Chrome is likely still using an older cached stylesheet and image instead of the updated map styling.
+
+### User
+ctrl f5 did the trick
+
+### Assistant
+Great, that confirms it was the browser cache. The hard reload forced Chrome to fetch the updated styles and image rather than the stale cached version.
+
+### User
+we need to refine the sizing of the ILUA labels and their position
+
+### Assistant
+I’m tightening the ILUA label sizing and placement against the map so they read clearly without crowding or overlapping the boundary image.
+
+### User
+I undid the changes as that made it worse.
+
+### Assistant
+I’m reverting to the current map layout and only adjusting the label typography size so the labels stay in place while reading more cleanly.
+
+### User
+Let's start with resizing the labels, keeping them in the same position.
+Make the labels two points smaller
+
+### Assistant
+I reduced the ILUA label font size by two points while keeping the exact current positions unchanged.
+
+### User
+Yes, make the labels less bulky
+
+### Assistant
+I reduced the label footprint further by tightening the padding, width, and border styling while keeping their positions fixed.
+
+### User
+Tighten the lengths of the labels for Yued, Whadjuk, Ballardon, and Wagyl Kaip only
+
+### Assistant
+I narrowed the width of just those four labels while leaving the rest of the map unchanged.
+
+### User
+There was no change. Which lines of the program manages label width
+
+### Assistant
+The label width is managed in two places: the default sizing in [styles.css](styles.css), and the per-label override in [app.js](app.js). The specific override for those four labels is in the inline style logic inside the ILUA view builder.
+
+### User
+Update the AI_LOG and AI_CHAT files
+
+### Assistant
+I’m updating both project logs with the latest ILUA label refinements and the recent cache/refresh discussion so the session record stays accurate.
+
+### User
+Items are still missing, such as the amendments to labels etc.
+
+### Assistant
+I’m appending the missing ILUA label adjustment prompts and responses to both logs so the full sequence from the recent refinements is captured in chronological order.
+
+### User
+which part of the coding controls the size of the ILUA map image
+
+### Assistant
+The map image size is controlled by the `.ilua-map` rule in [styles.css](styles.css#L297). Its `width: min(82vw, 620px)` sets the map width, and `aspect-ratio: 1.18` sets the container height relative to its width. The `background: ... center/cover` declaration scales the image to fill the container and may crop its edges. The ILUA label positions in `app.js` do not control the image size.
+
+### User
+automatically update both the AI_LOG and AI_CHAT files for the remainder of this session
+
+### Assistant
+I’ll keep recording substantive requests in [AI_LOG.md](AI_LOG.md) and the full conversation in [AI_CHAT.md](AI_CHAT.md) for the remainder of this session.
+
+### User
+slightly increase the size of the map image
+
+### Assistant
+I increased the `.ilua-map` maximum width in [styles.css](styles.css) from 620px to 660px, leaving its aspect ratio and responsive sizing rule unchanged. The stylesheet diagnostic reports no errors.
+
+### User
+Increase it again
+
+### Assistant
+I increased the `.ilua-map` maximum width in [styles.css](styles.css) from 660px to 700px. Its aspect ratio and responsive sizing behavior are unchanged, and the stylesheet diagnostic reports no errors.
+
+### User
+how do I align the label text so it is both vertically and horizontally centred
+
+### Assistant
+In [styles.css](styles.css), `.ilua-node` already uses `text-align: center` for horizontal alignment. To explicitly center the label content on both axes, change `display: block` to `display: flex` and add `align-items: center` and `justify-content: center`:
+
+```css
+.ilua-node {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+```
+
+If the label is a single line with automatic height, the current symmetric vertical padding already places it approximately in the middle. Flex alignment is most useful when the label has a fixed height or wraps onto multiple lines. I have not changed the CSS.

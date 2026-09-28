@@ -25,3 +25,10 @@ This log records substantive requests made in the current session. Conversationa
 - "The chat regarding adding comments to the files is still missing from the chat history"
 - "The updated chat is out of order. Please amend so that all user and assistant responses are in chronological order"
 - "This is still incorrect. Remove everything in the AI_CHAT.md file from line 193 onwards and replace with the complete chat history from 3:09 PM onwards."
+
+## 2026-09-28
+- "which part of the coding controls the size of the ILUA map image"
+- "automatically update both the AI_LOG and AI_CHAT files for the remainder of this session"
+- "slightly increase the size of the map image"
+- "Increase it again"
+- "how do I align the label text so it is both vertically and horizontally centred"
