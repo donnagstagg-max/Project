@@ -10,9 +10,12 @@
   <body>
     <!-- Main app shell: wraps the header and all dynamic screen content. -->
     <div class="app-shell">
-      <!-- Top bar containing the back navigation button and the page title. -->
+      <!-- Top bar containing home/back navigation controls and the page title. -->
       <header class="topbar">
-        <button id="backButton" class="back-button hidden" type="button" aria-label="Go back">← Back</button>
+        <nav class="nav-controls" aria-label="Page navigation">
+          <button id="homeButton" class="hidden" type="button">Home</button>
+          <button id="backButton" class="hidden" type="button" aria-label="Go back">← Back</button>
+        </nav>
         <h1>The seasons, regions, and plants of the Noongar people</h1>
       </header>
 

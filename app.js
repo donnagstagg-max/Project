@@ -44,6 +44,7 @@ async function initApp() {
     speciesCatalog = buildSpeciesCatalog(foodRows, medRows, wildRows);
 
     render();
+    document.getElementById('homeButton').addEventListener('click', goHome);
     document.getElementById('backButton').addEventListener('click', goBack);
   } catch (error) {
     console.error(error);
@@ -62,8 +63,10 @@ async function initApp() {
 function render() {
   const view = STATE.navStack[STATE.navStack.length - 1];
   const appView = document.getElementById('appView');
+  const homeButton = document.getElementById('homeButton');
   const backButton = document.getElementById('backButton');
 
+  homeButton.classList.toggle('hidden', STATE.navStack.length <= 1);
   backButton.classList.toggle('hidden', STATE.navStack.length <= 1);
 
   if (view === 'season') {
@@ -158,8 +161,8 @@ function renderSeasonView() {
   return `
     <div class="view">
       <div class="view-header">
-        <h2>Select a season</h2>
-        <p>The Noongar year is divided into six seasons which represent a timetable of future events, determined by what is changing and happening in nature.</p>
+        <h2>The Noongar year is divided into six seasons which represent a timetable of future events, determined by what is changing and happening in nature.</h2>
+        <p>Select a season to begin exploring the seasons, regions, and plants of Noongar Country.</p>
       </div>
 
       <div class="season-wheel" aria-label="Season selection wheel">
@@ -194,8 +197,8 @@ function renderIluaView() {
   const iluaCards = ILUA_ORDER.map((id) => {
     const { x, y } = labelPositions[id];
     const widthMap = {
-      i1: 'width: 90px;',
-      i4: 'width: 80px;',
+      i1: 'width: 95px;',
+      i4: 'width: 85px;',
       i5: 'width: 72px;',
       i6: 'width: 72px;'
     };
@@ -210,8 +213,8 @@ function renderIluaView() {
   return `
     <div class="view">
       <div class="view-header">
-        <h2>Select an ILUA area</h2>
-        <p>Choose a Noongar ILUA area to continue exploring.</p>
+        <h2>Noongar Indigenous Land Use Agreement Regions</h2>
+        <p>Select a Noongar ILUA region on the map to continue exploring.</p>
       </div>
 
       <div class="selection-summary">
@@ -219,10 +222,6 @@ function renderIluaView() {
       </div>
 
       <div class="map-panel">
-        <div class="ilua-map" aria-label="ILUA map selection">
-          ${iluaCards}
-        </div>
-
         <div class="ilua-info-grid">
           ${ILUA_ORDER.map((id) => `
             <article class="info-card">
@@ -230,6 +229,10 @@ function renderIluaView() {
               <p>${iluaLookup[id].ilua_info}</p>
             </article>
           `).join('')}
+        </div>
+
+        <div class="ilua-map" aria-label="ILUA map selection">
+          ${iluaCards}
         </div>
       </div>
     </div>
@@ -362,6 +365,14 @@ function goBack() {
     STATE.navStack.pop();
     render();
   }
+}
+
+function goHome() {
+  STATE.navStack = ['season'];
+  STATE.selectedSeason = '';
+  STATE.selectedILUA = '';
+  STATE.selectedCategory = '';
+  render();
 }
 
 function getFilteredSpecies() {
