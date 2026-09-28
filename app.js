@@ -11,9 +11,21 @@ const SEASON_COLORS = {
   s6: '#d9a6b1'
 };
 const CATEGORY_INFO = {
-  bush_food: { label: 'Bush Food', emoji: '🌿' },
-  bush_medicine: { label: 'Bush Medicine', emoji: '🌼' },
-  wildflower: { label: 'Wildflower', emoji: '🌺' }
+  bush_food: {
+    label: 'Bush Food',
+    photo: 'category_photos/Santalum%20acuminatum.jpg',
+    photoAlt: 'Santalum acuminatum (Quandong)'
+  },
+  bush_medicine: {
+    label: 'Bush Medicine',
+    photo: 'category_photos/Solanum%20lasiophyllum.jpg',
+    photoAlt: 'Solanum lasiophyllum'
+  },
+  wildflower: {
+    label: 'Wildflower',
+    photo: 'category_photos/Caladenia%20macrostylis.jpg',
+    photoAlt: 'Caladenia macrostylis'
+  }
 };
 
 const STATE = {
@@ -254,12 +266,20 @@ function renderCategoryView() {
       </div>
 
       <div class="category-grid">
-        ${Object.entries(CATEGORY_INFO).map(([key, item]) => `
-          <button class="category-card" type="button" data-category="${key}">
-            <div class="category-emoji">${item.emoji}</div>
-            <div>${item.label}</div>
-          </button>
-        `).join('')}
+        ${Object.entries(CATEGORY_INFO).map(([key, item]) => {
+          const representative = speciesCatalog.find((species) => species.category === key && species.photo_hlink);
+          const photoSrc = item.photo || representative?.photo_hlink || placeholderImage(item.label);
+          const photoAlt = item.photoAlt || (representative
+            ? `${item.label}: ${representative.species_name}`
+            : `${item.label} plant photo`);
+
+          return `
+            <button class="category-card" type="button" data-category="${key}">
+              <img class="category-photo" src="${photoSrc}" alt="${photoAlt}" loading="lazy" onerror="this.onerror=null;this.src='${placeholderImage(item.label)}'" />
+              <div>${item.label}</div>
+            </button>
+          `;
+        }).join('')}
       </div>
     </div>
   `;
