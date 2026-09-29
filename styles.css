@@ -43,7 +43,7 @@ button, input, a {
 .app-shell {
   width: min(1100px, 100%);
   min-height: 850px;
-  background: rgba(246, 239, 225, 0.9);
+  background: rgba(245, 218, 223, 0.8);
   border: 1px solid var(--border);
   border-radius: 28px;
   box-shadow: var(--shadow);
@@ -192,7 +192,7 @@ button, input, a {
   }
 
 .season-wheel-center .main-label {
-  font-size: clamp(1.5rem, 2.2vw, 2.5rem);
+  font-size: clamp(1.9rem, 2.6vw, 2.9rem);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: 0.03em;
@@ -200,7 +200,7 @@ button, input, a {
 }
 
 .season-wheel-center .mini-title {
-  font-size: clamp(1.3rem, 2vw, 2.2rem);
+  font-size: clamp(1.9rem, 2.6vw, 2.9rem);
   font-weight: 700;
   line-height: 1.1;
   letter-spacing: 0.03em;
@@ -233,7 +233,7 @@ button, input, a {
   position: absolute;
   inset: 0;
   border-radius: 50%;
-  background: url("background_image.JPG") center center / cover no-repeat;
+  background: url("background_image2.JPG") center center / cover no-repeat;
   opacity: 0.9;
   z-index: -1;
 }

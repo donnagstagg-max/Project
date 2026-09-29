@@ -3,12 +3,12 @@
 const SEASON_ORDER = ['s1', 's2', 's3', 's4', 's5', 's6'];
 const ILUA_ORDER = ['i1', 'i2', 'i3', 'i4', 'i5', 'i6'];
 const SEASON_COLORS = {
-  s1: '#d86d4f',
-  s2: '#f0b23c',
-  s3: '#d9a15b',
-  s4: '#9bb98a',
-  s5: '#b6cfe2',
-  s6: '#d9a6b1'
+  s1: 'rgb(216, 109, 79)',
+  s2: 'rgb(240, 178, 60)',
+  s3: 'rgb(217, 161, 91)',
+  s4: 'rgb(155, 185, 138)',
+  s5: 'rgb(182, 207, 226)',
+  s6: 'rgb(217, 166, 177)'
 };
 const CATEGORY_INFO = {
   bush_food: {
