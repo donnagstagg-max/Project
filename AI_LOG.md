@@ -74,3 +74,9 @@ This log records substantive requests made in the current session. Conversationa
 - "Amend the category \"Wildflower\" to \"Wildflowers\""
 - "Make the text of the summary pills on each view all uppercase"
 - "create a README.md file that explains to users how to use the app"
+
+## 2026-09-28
+- "populate the main background body of the app with the picture file named background_image.JPG. This should populate for each view opened by the user"
+- "increase the text in the centre of the season wheel"
+- "yes increase the overall wheel size"
+- "can you increase the size of the centre of the season wheel so there is less empty space between the season wheel centre and the season wheel wedges?"

@@ -870,3 +870,176 @@ excellent thanks
 
 ### Assistant
 You’re welcome.
+
+### User
+populate the main background body of the app with the picture file named background_image.JPG. This should populate for each view opened by the user
+
+### Assistant
+✅ Background image applied
+I updated styles.css so the full page uses the project wallpaper file background_image.JPG across the app shell and all views.
+
+The rendered page snapshot confirms the background image is loading behind the app content, while the main content area remains readable with its semi-transparent panel styling.
+
+If you want, I can next make the wallpaper more subtle or adjust the app panel opacity to better balance the image with the interface.
+
+### User
+which section of the program manages the transparency of the secondary background layer?
+
+### Assistant
+The transparency for the secondary background layer is controlled here in styles.css:
+
+styles.css:39-46 has:
+background: rgba(255, 255, 255, 0.65);
+That rgba alpha value of 0.65 is what makes the panel semi-transparent, so the main wallpaper image shows through behind the app content.
+
+In other words, the “secondary layer” is the white panel around the app itself, and its transparency is set by the alpha channel in that background color.
+
+### User
+I have added background_image.JPG to be the background of the season-wheel-center. How do I make it 80% transparent?
+
+### Assistant
+I’ll show the exact CSS change for the wheel center so the background image keeps showing through at 80% opacity without affecting the text.
+
+Make the season-wheel-center image 80% transparent
+Use the background color with an alpha value on the center circle, or layer a semi-transparent overlay on top of the image.
+
+The simplest version is:
+.season-wheel-center {
+  background-image: url("background_image.JPG");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.8;
+}
+
+This makes the entire element, including the text inside it, 80% transparent.
+
+If you want only the background image to be 80% transparent while keeping the text fully visible, use:
+.season-wheel-center {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: 32%;
+  max-width: 220px;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background-image: url("background_image.JPG");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  position: relative;
+}
+
+.season-wheel-center::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background-image: url("background_image.JPG");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.8;
+}
+
+.season-wheel-center > * {
+  position: relative;
+  z-index: 1;
+}
+
+Best choice
+For your case, the first option is usually the easiest:
+opacity: 0.8;
+
+This makes the whole center circle 80% transparent.
+
+If you want, I can update the exact rule in styles.css for you.
+
+
+### User
+is there coding in the program that is making the season wheel centre text transparent
+
+### Assistant
+Yes
+The transparency is being caused by this rule in styles.css:210-223:
+.season-wheel-center {
+  ...
+  background: url("background_image.JPG") center center / cover no-repeat fixed;
+  opacity: 0.8;
+  ...
+}
+
+Because opacity is applied to the whole .season-wheel-center element, both the background image and the text inside it become 80% transparent.
+
+If you want the image faded but the text fully visible, the better approach is to keep the text opacity at 1 and apply transparency only to the background layer using a pseudo-element or a separate overlay.
+
+### User
+Please amend so that the image only is faded and the text is fully opaque
+
+### Assistant
+✅ Updated
+The transparency has been moved off the text and onto the background image only.
+
+The key change is in styles.css:210-236:
+
+.season-wheel-center keeps its text at full opacity
+.season-wheel-center::before holds the image with opacity: 0.8
+This means the image is faded, but the center label remains fully opaque and readable.
+
+If you want the fade to be even more subtle or more pronounced, I can tune the opacity value from 0.8 to something like 0.6 or 0.9.
+
+### User
+increase the text in the centre of the season wheel
+
+### Assistant
+✅ Center text increased
+I increased the font size in the season wheel center by updating the label rules in styles.css:192-208:
+
+.main-label: larger
+.mini-title: larger
+This makes the centre text more prominent while preserving the current layout.
+
+If you want, I can also make the text more condensed or increase the overall wheel size to better match the reference image.
+
+### User
+yes increase the overall wheel size
+
+### Assistant
+✅ Wheel enlarged
+I increased the main season wheel size in styles.css:133-143 from:
+
+width: min(82vw, 680px)
+to:
+
+width: min(86vw, 760px)
+This makes the wheel larger and more prominent on the page while keeping it responsive.
+
+If you want, I can also increase the inner centre circle slightly so it balances better with the larger wheel.
+
+### User
+can you increase the size of the centre of the season wheel so there is less empty space between the season wheel centre and the season wheel wedges?
+
+### Assistant
+✅ Hub enlarged
+I increased the central hub in styles.css:207-233 from:
+
+width: 32%
+max-width: 220px
+to:
+
+width: 42%
+max-width: 300px
+This reduces the empty space between the middle circle and the outer season wedges.
+
+If you want, I can also nudge the hub slightly outward or inward to fine-tune the exact spacing against the reference image.
+
+### User
+This is perfect, thanks.
+
+### Assistant
+✅ Happy to help
+I’m glad that adjustment looks right. If you want, I can next help with the next refinement pass on the wheel, such as:
+
+matching the wedge spacing even more closely to the reference image
+adjusting text rotation for individual seasons
+tightening the inner ring layout for a more polished Noongar wheel style
