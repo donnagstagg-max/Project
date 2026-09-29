@@ -4,24 +4,20 @@ This app helps you explore plant species by Noongar season, ILUA area, and categ
 
 ## Start the app
 
-Download from github
-navigate to Project folder in terminal before running server
-add line about hard refresh Ctrl + F5 blah blah blah - "troubleshoot"
-Add references
-
-
 The app loads its CSV data with browser requests, so open it through a local web server rather than opening `index.html` directly.
 
-1. Open PowerShell or a terminal in the project folder.
-2. Start the server:
+1. Ensure your device has "PowerShell" (Windows) or "Terminal" (MAC) capabilities
+2. Download all files from GitHub (https://github.com/whittersunderwater/Project.git) and save to your device
+3. Open PowerShell or a terminal and navigate to the "Project" folder.
+4. Start the server:
 
    ```powershell
    py -m http.server 8000
    ```
 
-   If `py` is unavailable but Python is installed, use `python -m http.server 8000` instead.
-3. In your browser, go to <http://localhost:8000>.
-4. Leave the terminal window open while using the app. Press Ctrl+C in that window when you are finished.
+   If `py` is unavailable but Python is installed, use `python3 -m http.server 8000` instead.
+5. In your browser, go to <http://localhost:8000>.
+6. Leave the terminal window open while using the app. Press Ctrl+C in that window when you are finished.
 
 If port 8000 is already in use, start the server on another port, such as 8001, and open the matching address, for example <http://localhost:8001>.
 
@@ -38,6 +34,13 @@ Use **Back** to return one step and change the previous selection. Use **Home** 
 
 Use **Back to top of list** at the bottom of the species view to return to the start of a long list.
 
+## Troubleshooting
+
+If the app is not loading correctly and missing items like species photographs, select Ctrl + F5 in the browser for a hard refresh.
+Contact app developers via GitHub if issues persist.
+
 ## Offline use
 
 Keep the project files together, including the CSV files, `category_photos/`, and `species_photos/`. When those files are available on the device, the app and its photos do not require an internet connection. A local web server is still required to load the CSV data in the browser. Found checkbox states are stored separately in that browser's local storage.
+
+References for artwork, information, and photographs in the app:
