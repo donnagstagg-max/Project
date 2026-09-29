@@ -179,8 +179,8 @@ function renderSeasonView() {
 
       <div class="season-wheel" aria-label="Season selection wheel">
         <svg class="season-svg" viewBox="0 0 680 680" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-          <circle cx="340" cy="340" r="165" fill="rgba(255,255,255,0.82)" stroke="rgba(39,64,53,0.12)" stroke-width="2" />
-          <circle cx="340" cy="340" r="72" fill="rgba(255,255,255,0.94)" stroke="rgba(39,64,53,0.12)" stroke-width="2" />
+          <circle cx="340" cy="340" r="165" fill="rgba(157,124,180,0.90)" stroke="rgba(39,64,53,0.12)" stroke-width="2" />
+          <circle cx="340" cy="340" r="72" fill="rgba(157,124,180,0.90)" stroke="rgba(39,64,53,0.12)" stroke-width="2" />
           ${seasonCards}
         </svg>
         <div class="season-wheel-center">
