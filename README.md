@@ -16,6 +16,7 @@ The app loads its CSV data with browser requests, so open it through a local web
    ```
 
    If `py` is unavailable but Python is installed, use `python3 -m http.server 8000` instead.
+   If Python is not installed, download latest version and install.
 5. In your browser, go to <http://localhost:8000>.
 6. Leave the terminal window open while using the app. Press Ctrl+C in that window when you are finished.
 
