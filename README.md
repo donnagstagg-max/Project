@@ -4,6 +4,12 @@ This app helps you explore plant species by Noongar season, ILUA area, and categ
 
 ## Start the app
 
+Download from github
+navigate to Project folder in terminal before running server
+add line about hard refresh Ctrl + F5 blah blah blah - "troubleshoot"
+Add references
+
+
 The app loads its CSV data with browser requests, so open it through a local web server rather than opening `index.html` directly.
 
 1. Open PowerShell or a terminal in the project folder.
