@@ -44,4 +44,4 @@ Contact app developers via GitHub if issues persist.
 
 Keep the project files together, including the CSV files, `category_photos/`, and `species_photos/`. When those files are available on the device, the app and its photos do not require an internet connection. A local web server is still required to load the CSV data in the browser. Found checkbox states are stored separately in that browser's local storage.
 
-References for artwork, information, and photographs in the app:
+## References for artwork, information, and photographs in the app:

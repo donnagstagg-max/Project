@@ -43,7 +43,7 @@ button, input, a {
 .app-shell {
   width: min(1100px, 100%);
   min-height: 850px;
-  background: rgba(245, 218, 223, 0.8);
+  background: rgba(251, 227, 214, 0.80);
   border: 1px solid var(--border);
   border-radius: 28px;
   box-shadow: var(--shadow);
