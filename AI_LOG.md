@@ -80,3 +80,7 @@ This log records substantive requests made in the current session. Conversationa
 - "increase the text in the centre of the season wheel"
 - "yes increase the overall wheel size"
 - "can you increase the size of the centre of the season wheel so there is less empty space between the season wheel centre and the season wheel wedges?"
+
+## 2026-10-01
+- "add filtering functionality to the species lists that enables users to filter by \"Found\""
+- "move the \"Show species\" filter so that it is right-aligned on the species list page"

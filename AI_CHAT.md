@@ -1043,3 +1043,24 @@ I’m glad that adjustment looks right. If you want, I can next help with the ne
 matching the wedge spacing even more closely to the reference image
 adjusting text rotation for individual seasons
 tightening the inner ring layout for a more polished Noongar wheel style
+
+### User
+add filtering functionality to the species lists that enables users to filter by "Found"
+
+### Assistant
+Added a “Show species” filter to the species view with All species, Found, and Not found options. The results use the existing saved checkbox state, so found selections persist as before. When a species is checked or unchecked while a status filter is active, the list updates immediately. An explanatory empty state appears when no species match the selected status.
+
+### Verification
+Tested the app in the browser: the default list showed 15 species, marking a species as found reduced the Not found list to 14, and the Found filter showed that species. The browser’s previous saved checkbox state was restored after testing. `git diff --check` passed; no test files are present in the project. A Node syntax check could not run because Node.js is not installed in this environment.
+
+### User
+move the "Show species" filter so that it is right-aligned on the species list page
+
+### Assistant
+Right-aligned the “Show species” filter in the species list view by aligning its container to the right.
+
+### User
+which part of coding deals with the font size for the text "Show species:"
+
+### Assistant
+The “Show species:” label is styled by the `.species-filters` rule in [styles.css](styles.css#L417). That rule sets its color and bold weight, but no `font-size`, so the label inherits the default size (normally 16px). To change it, add a `font-size` declaration to `.species-filters`. The `<select>` uses `font: inherit` in `.species-filters select`, so its text also follows the parent font settings.

@@ -33,6 +33,7 @@ const STATE = {
   selectedSeason: '',
   selectedILUA: '',
   selectedCategory: '',
+  foundFilter: 'all',
   checked: loadCheckedState()
 };
 
@@ -290,7 +291,11 @@ function renderCategoryView() {
 
 // Displays the filtered species list for the selected season, ILUA area, and category.
 function renderSpeciesView() {
-  const species = getFilteredSpecies();
+  const allSpecies = getFilteredSpecies();
+  const species = allSpecies.filter((item) => {
+    if (STATE.foundFilter === 'all') return true;
+    return Boolean(STATE.checked[item.id]) === (STATE.foundFilter === 'found');
+  });
 
   return `
     <div class="view">
@@ -298,6 +303,15 @@ function renderSpeciesView() {
         <span class="summary-pill">Season: ${seasonLookup[STATE.selectedSeason].season_name}</span>
         <span class="summary-pill">Area: ${iluaLookup[STATE.selectedILUA].ilua_name}</span>
         <span class="summary-pill">Category: ${CATEGORY_INFO[STATE.selectedCategory].label}</span>
+      </div>
+
+      <div class="species-filters">
+        <label for="found-filter">Show species:</label>
+        <select id="found-filter">
+          <option value="all" ${STATE.foundFilter === 'all' ? 'selected' : ''}>All species</option>
+          <option value="found" ${STATE.foundFilter === 'found' ? 'selected' : ''}>Found</option>
+          <option value="not-found" ${STATE.foundFilter === 'not-found' ? 'selected' : ''}>Not found</option>
+        </select>
       </div>
 
       <div class="species-list">
@@ -324,7 +338,9 @@ function renderSpeciesView() {
           `;
         }).join('') : `
           <div class="empty-state">
-            No species match this combination of season, ILUA area, and category.
+            ${allSpecies.length
+              ? `No species marked ${STATE.foundFilter === 'found' ? 'Found' : 'Not found'} in this selection.`
+              : 'No species match this combination of season, ILUA area, and category.'}
           </div>
         `}
       </div>
@@ -373,6 +389,11 @@ function bindCategoryEvents() {
 }
 
 function bindSpeciesEvents() {
+  document.querySelector('#found-filter')?.addEventListener('change', (event) => {
+    STATE.foundFilter = event.target.value;
+    render();
+  });
+
   document.querySelector('.list-top-button')?.addEventListener('click', () => {
     document.querySelector('.species-list')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   });
@@ -401,6 +422,10 @@ function bindSpeciesEvents() {
       const speciesId = event.target.dataset.speciesId;
       STATE.checked[speciesId] = event.target.checked;
       localStorage.setItem('noongarPlantFinderChecked', JSON.stringify(STATE.checked));
+
+      const matchesFoundFilter = STATE.foundFilter === 'all' ||
+        STATE.checked[speciesId] === (STATE.foundFilter === 'found');
+      if (!matchesFoundFilter) render();
     });
   });
 }
