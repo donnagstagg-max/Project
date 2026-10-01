@@ -1105,3 +1105,12 @@ expect(
 ```
 
 The remaining 10 tests passed, including filter content, persistence after reload, malformed saved state, failed CSV request handling, and navigation.
+
+### User
+Please make the necessary changes in app_tests.py
+
+### Assistant
+Updated `test_checking_species_removes_it_from_not_found_filter` to capture the first checkbox locator and invoke one click with Playwright's `evaluate()` instead of `.check()`. This prevents Playwright from retrying against successive `.first` checkboxes while the app rerenders and removes the checked species from the Not found results.
+
+### Verification
+Ran `python -m pytest -v app_tests.py`; all 11 tests passed.

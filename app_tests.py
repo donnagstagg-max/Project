@@ -123,8 +123,9 @@ def test_checking_species_removes_it_from_not_found_filter(
     open_species_page(clean_page)
     clean_page.locator("#found-filter").select_option("not-found")
 
+    first_checkbox = clean_page.locator(".found-toggle input").first
     first_name = clean_page.locator(".species-body h3").first.inner_text()
-    clean_page.locator(".found-toggle input").first.check()
+    first_checkbox.evaluate("(checkbox) => checkbox.click()")
 
     clean_page.locator("#found-filter").select_option("found")
     expect(
@@ -191,3 +192,27 @@ def test_main_navigation_has_no_uncaught_javascript_errors(
     open_species_page(clean_page)
 
     assert errors == []
+
+
+### Automated testing results:
+
+#================================= test session starts ==================================
+#platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\chell\AppData\Local\Programs\Python\Python314\python.exe
+#cachedir: .pytest_cache
+#rootdir: C:\Users\chell\OneDrive - UWA\CITS1501 Project\Project
+#plugins: base-url-2.1.0, playwright-0.9.0
+#collected 11 items                                                                      
+
+#app_tests.py::test_season_wheel_loads_six_seasons[chromium] PASSED                [  9%]
+#app_tests.py::test_navigation_reaches_species_list[chromium] PASSED               [ 18%]
+#app_tests.py::test_species_are_sorted_alphabetically[chromium] PASSED             [ 27%]
+#app_tests.py::test_found_filter_shows_empty_message_when_none_are_found[chromium] PASSED[ 36%]
+#app_tests.py::test_not_found_filter_only_shows_unchecked_species[chromium] PASSED [ 45%]
+#app_tests.py::test_checking_species_removes_it_from_not_found_filter[chromium] PASSED [ 54%]
+#app_tests.py::test_found_checkbox_persists_after_reload[chromium] PASSED          [ 63%]
+#app_tests.py::test_malformed_saved_state_does_not_break_startup[chromium] PASSED  [ 72%]
+#app_tests.py::test_csv_network_failure_shows_load_error[chromium] PASSED          [ 81%]
+#app_tests.py::test_back_and_home_navigation_work[chromium] PASSED                 [ 90%]
+#app_tests.py::test_main_navigation_has_no_uncaught_javascript_errors[chromium] PASSED [100%]
+
+#================================== 11 passed in 9.06s ==================================
