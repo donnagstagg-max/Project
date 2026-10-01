@@ -1064,3 +1064,44 @@ which part of coding deals with the font size for the text "Show species:"
 
 ### Assistant
 The “Show species:” label is styled by the `.species-filters` rule in [styles.css](styles.css#L417). That rule sets its color and bold weight, but no `font-size`, so the label inherits the default size (normally 16px). To change it, add a `font-size` declaration to `.species-filters`. The `<select>` uses `font: inherit` in `.species-filters select`, so its text also follows the parent font settings.
+
+### User
+how would I create an automated test script using pytest to test this app? It needs to cover: At least 8 automated tests, edge cases, error handling, and reliable application behaviour
+
+### Assistant
+The app is a static HTML/CSS/JavaScript application that fetches five CSV files, so pytest should drive a real browser using `pytest-playwright`, rather than attempt to test the UI as a Python module. A test fixture can start Python's local HTTP server for the project directory and use Playwright to walk through season, ILUA, category, and species selection.
+
+The suggested test cases cover initial load, navigation, species ordering, the All/Found/Not found filters, status updates after checkbox changes, persistence after reload, malformed saved local storage, and CSV network-failure handling. Keep each test isolated by clearing local storage, and use Playwright's `expect` assertions and auto-waiting locators instead of fixed sleeps.
+
+Install pytest and pytest-playwright, install the Playwright Chromium browser, save the example suite under `tests/test_app.py`, then run it with `py -m pytest -v`. The app's current `fetchCSV` implementation doesn't check `response.ok`, so an HTTP 404 can be parsed as text instead of producing the visible load error; test a network abort with the existing implementation, or add an explicit response-status check before expecting 404s to use the error screen.
+
+### User
+does this code provide clear pass / fail results of each test?
+
+### Assistant
+Yes. Run the tests with `py -m pytest -v app_tests.py` to get a separate `PASSED` or `FAILED` result for every test; failures include the assertion and traceback. Pytest's default summary also reports totals. One path detail to correct in the supplied script: if `app_tests.py` is in the project root, set `PROJECT_ROOT = Path(__file__).resolve().parent`, not `.parents[1]`, or the fixture serves the parent directory instead of the app files.
+
+### User
+There was one failure. What does this mean?
+
+Here is the output from running app_tests.py
+
+### Assistant
+The test output shows **10 passed and 1 failed**. The failure is in `test_checking_species_removes_it_from_not_found_filter` at the `.check()` call, not in one of the later assertions.
+
+The app rerenders the species list immediately when a species is checked under the Not found filter, because that species no longer belongs in the filtered results. The traceback shows Playwright first targets the checkbox for species `f2`, then after the list is replaced its `.first` locator resolves to new checkboxes (`f34`, `f7`, and so on) and continues clicking. Eventually it times out after 30 seconds. This is a test interaction racing with the expected DOM replacement, rather than evidence that the Found filter itself is broken.
+
+To make the test resilient, capture the species name before the action and trigger one click without using `.check()`'s retry-until-checked behavior; then switch to Found and assert that name is displayed:
+
+```python
+first_checkbox = clean_page.locator(".found-toggle input").first
+first_name = clean_page.locator(".species-body h3").first.inner_text()
+first_checkbox.evaluate("(checkbox) => checkbox.click()")
+
+clean_page.locator("#found-filter").select_option("found")
+expect(
+    clean_page.locator(".species-body h3", has_text=first_name)
+).to_be_visible()
+```
+
+The remaining 10 tests passed, including filter content, persistence after reload, malformed saved state, failed CSV request handling, and navigation.

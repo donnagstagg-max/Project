@@ -84,3 +84,6 @@ This log records substantive requests made in the current session. Conversationa
 ## 2026-10-01
 - "add filtering functionality to the species lists that enables users to filter by \"Found\""
 - "move the \"Show species\" filter so that it is right-aligned on the species list page"
+- "how would I create an automated test script using pytest to test this app? It needs to cover: At least 8 automated tests, edge cases, error handling, and reliable application behaviour"
+- "does this code provide clear pass / fail results of each test?"
+- "There was one failure. What does this mean? Here is the output from running app_tests.py"
