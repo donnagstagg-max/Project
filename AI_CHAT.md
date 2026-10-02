@@ -1114,3 +1114,19 @@ Updated `test_checking_species_removes_it_from_not_found_filter` to capture the 
 
 ### Verification
 Ran `python -m pytest -v app_tests.py`; all 11 tests passed.
+
+### User
+what does this mean?
+Import "pytest" could not be resolved
+
+### Assistant
+Pylance reports `reportMissingImports` for both `pytest` and `playwright.sync_api`. The Python interpreter selected for this workspace is `.venv\\Scripts\\python.exe`, and Pylance cannot find either package in that environment. This explains why the editor shows unresolved-import warnings; it does not contradict the earlier test run, which used a different interpreter (`C:\\Users\\chell\\AppData\\Local\\Programs\\Python\\Python314\\python.exe`) where pytest and Playwright are installed.
+
+To make the warnings go away while keeping the workspace virtual environment, install the test packages into that environment:
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install pytest pytest-playwright
+.\.venv\Scripts\python.exe -m playwright install chromium
+```
+
+Alternatively, select the Python 3.14 interpreter that successfully ran the tests in VS Code. The matching interpreter must be selected in the Python environment picker. No code change is needed.

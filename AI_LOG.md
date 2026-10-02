@@ -88,3 +88,4 @@ This log records substantive requests made in the current session. Conversationa
 - "does this code provide clear pass / fail results of each test?"
 - "There was one failure. What does this mean? Here is the output from running app_tests.py"
 - "Please make the necessary changes in app_tests.py"
+- "what does this mean? Import \"pytest\" could not be resolved"
