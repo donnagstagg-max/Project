@@ -6,7 +6,7 @@ This app helps you explore plant species by Noongar season, ILUA area, and categ
 
 The app loads its CSV data with browser requests, so open it through a local web server rather than opening `index.html` directly.
 
-1. Ensure your device has "PowerShell" (Windows) or "Terminal" (MAC) capabilities
+1. Ensure your device has terminal capabilities
 2. Download all files from GitHub (https://github.com/whittersunderwater/Project.git) and save to your device
 3. Open PowerShell or a terminal and navigate to the "Project" folder.
 4. Start the server:
@@ -17,7 +17,7 @@ The app loads its CSV data with browser requests, so open it through a local web
 
    If `py` is unavailable but Python is installed, use `python3 -m http.server 8000` instead.
    If Python is not installed, download latest version and install.
-5. In your browser, go to <http://localhost:8000>.
+5. In your browser, navigate to <http://localhost:8000>.
 6. Leave the terminal window open while using the app. Press Ctrl+C in that window when you are finished.
 
 If port 8000 is already in use, start the server on another port, such as 8001, and open the matching address, for example <http://localhost:8001>.
