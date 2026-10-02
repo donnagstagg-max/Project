@@ -89,3 +89,11 @@ This log records substantive requests made in the current session. Conversationa
 - "There was one failure. What does this mean? Here is the output from running app_tests.py"
 - "Please make the necessary changes in app_tests.py"
 - "what does this mean? Import \"pytest\" could not be resolved"
+
+## 2026-10-02
+- "does the coding in this project contain an algorithm?"
+- "what can you tell me about the below in regards to this project? edge cases, error handling, and reliable application behaviour."
+- "Can you amend the app_tests.py file to include your suggested tests or improvements?"
+- "Now considering the changes made and new tests created, what can you say about this project in regards to edge cases, error handling, and reliable application behaviour?"
+- "Please add a test that verifies every species is assigned to the correct combinations"
+- "Clearly explain how this app handles edge cases, error handling, and reliable application behaviour"

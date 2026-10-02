@@ -1130,3 +1130,66 @@ To make the warnings go away while keeping the workspace virtual environment, in
 ```
 
 Alternatively, select the Python 3.14 interpreter that successfully ran the tests in VS Code. The matching interpreter must be selected in the Python environment picker. No code change is needed.
+
+### User
+does the coding in this project contain an algorithm?
+
+### Assistant
+Yes. The project includes several algorithms: `parseCSV` scans CSV text character by character and handles quoted commas, escaped quotes, and multiline fields; `buildSpeciesCatalog` transforms source rows and normalizes season/ILUA presence values; `getFilteredSpecies` filters species by selected category, season, and ILUA area, then sorts the matches alphabetically; the Found filter further partitions results according to saved checkbox state; and the wheel geometry helpers calculate SVG sector and label coordinates using polar-coordinate formulas. These are small, task-specific algorithms, though the app is primarily a data-driven interactive UI rather than a complex algorithm-heavy system.
+
+### User
+what can you tell me about the below in regards to this project?
+
+edge cases, error handling, and reliable
+application behaviour.
+
+### Assistant
+For this app, **edge cases** are unusual but valid conditions the app should handle, such as no species matching a season/ILUA/category, no species currently marked Found, malformed saved checkbox data, a photo or CSV that cannot load, or users navigating backward and changing selections.
+
+The current code already handles some of these: it displays an empty-state message for no species or no matches in the Found filter; catches invalid JSON when loading saved Found state and continues with an empty object; handles CSV request failures with a “Data could not be loaded” screen; provides a placeholder when a species photo fails; and includes Home/Back navigation. The `app_tests.py` browser suite covers the main navigation/filtering flows, alphabetical order, persistence, malformed stored JSON, a failed CSV request, and browser JavaScript errors. The recent run passed all 11 tests.
+
+There are still reliability gaps worth noting: `fetchCSV()` does not check `response.ok`, so an HTTP 404 may be treated as CSV text instead of triggering the load-error screen; the CSV parser is tested only indirectly and has no explicit malformed/empty CSV tests; browser storage write failures are not caught; and photo fallback, missing data fields/files, and all season/area/category combinations are not systematically tested.
+
+To improve reliability, add targeted tests for those cases, validate required CSV columns and response status, and decide how to report localStorage write failures. Reliability also means using a local web server and keeping the required CSV and image files together on the tablet; this static app does not need a network connection once served locally.
+
+### User
+Can you amend the app_tests.py file to include your suggested tests or improvements?
+
+### Assistant
+Expanded `app_tests.py` with checks for HTTP 404 CSV responses, empty CSVs, missing required headers, malformed quoted CSV, photo-load fallback, species records with optional fields omitted, browser-storage write failures, and rendering of all 108 season/ILUA/category combinations. Updated the app to check CSV HTTP status, validate required CSV columns and nonempty data, reject unmatched CSV quotes, and show an accessible warning if Found selections cannot be saved. Added automated-test setup and run instructions to README.md and removed the pasted prior pytest output from the end of the test script.
+
+### Verification
+Ran `python -m pytest -v app_tests.py` in the project virtual environment: **19 passed**. `git diff --check` passed.
+
+### User
+Now considering the changes made and new tests created, what can you say about this project in regards to edge cases, error handling, and reliable application behaviour?
+
+### Assistant
+The current project is more robust against several specific edge cases than before. Data loading now rejects failed HTTP responses, empty CSV files, missing required headers, and unmatched quotes, and the app shows a visible load-error screen. Missing optional species fields have fallbacks, failed photos use a placeholder, and failed writes of Found state are caught and announced to the user while keeping the in-memory change for the current page session.
+
+The 19-test browser suite exercises ordinary navigation/filtering, persistence, malformed stored JSON, network and CSV error cases, placeholder/fallback behavior, storage-write failures, and all 108 season/ILUA/category combinations. I reran it on 2026-10-02 using the project virtual environment: all **19 passed** in 26.45 seconds.
+
+Passing tests provide evidence for the behaviors they assert, not proof that all possible problems are absent. The 108-combination test checks that every combination renders either a species list or an empty state; it does not validate that every individual species is assigned to the correct region/season. Other remaining opportunities include explicit parser tests for escaped quotes, quoted commas, multiline values and inconsistent row lengths; malformed-but-valid JSON saved state (for example, `null` or an array rather than an object); invalid IDs/categories and duplicate records; and testing across browsers/tablet devices. The UI currently gives a generic load message while technical details are written to the console.
+
+Overall, the app has meaningful edge-case handling and a useful regression suite for its core workflows, with improved reliability for local data failures and persistence errors. It should be described as better tested and more resilient, rather than guaranteed error-free.
+
+### User
+Please add a test that verifies every species is assigned to the correct combinations
+
+### Assistant
+Updated the all-combinations test so it independently reads the three species CSV files and computes the expected species for each season, ILUA area, and category from the `s1`-`s6` and `i1`-`i6` presence flags. It now compares the exact alphabetically ordered expected names with the displayed species names for every combination, and verifies that combinations with no expected species show the empty state.
+
+### Verification
+Ran the full suite in the project virtual environment: **19 passed** in 22.58 seconds. `git diff --check` passed.
+
+### User
+Clearly explain how this app handles edge cases, error handling, and reliable application behaviour
+
+### Assistant
+In this project, edge cases are conditions outside the ordinary browsing path, error handling is the app's response to failures, and reliability is how consistently the app behaves across both normal use and those edge cases.
+
+The app validates CSV responses: failed HTTP statuses, empty data, missing required columns, and unmatched quotes stop startup and show a user-facing “Data could not be loaded” message, with technical error detail sent to the browser console. It provides fallback text for missing optional species fields and a generated placeholder image when a photo fails. If saved Found checkbox data is invalid JSON, startup continues using an empty saved state. If writing Found state fails, the app logs the problem and shows an accessible warning; the change remains in memory for that page session but won't persist.
+
+The pytest/Playwright suite has 19 tests covering navigation, filtering, alphabetical ordering, persistence, malformed saved JSON, CSV network/HTTP/format/schema failures, missing optional fields, broken photos, storage write failure, JavaScript errors, and every one of the 108 season/ILUA/category selections. The all-combinations test now compares the exact displayed species names against expected names independently derived from each source CSV's season and ILUA presence flags. The most recent run recorded 19 passing tests.
+
+Together, this is meaningful evidence that key expected behavior and known failure cases work; it does not prove the app cannot fail. Remaining limits include limited tests for CSV quoting/row-shape variants, valid JSON with an unexpected structure, duplicate or invalid source records, platform/browser differences, and the semantic correctness of the source CSV assignments themselves. The exact-assignment test verifies the app follows the CSV flags; it cannot prove the CSV data is factually correct.

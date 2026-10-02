@@ -1,5 +1,7 @@
 #### Script for automated testing, edge cases, error handling, and performance
 
+import re
+import csv
 import socket
 import subprocess
 import sys
@@ -13,6 +15,7 @@ from playwright.sync_api import Page, expect
 
 
 PROJECT_ROOT = Path(__file__).resolve().parent
+
 
 @pytest.fixture(scope="session")
 def app_url():
@@ -75,6 +78,17 @@ def open_species_page(page: Page) -> None:
     page.locator(".ilua-node").first.click(force=True)
     page.locator(".category-card").first.click(force=True)
     expect(page.locator("#found-filter")).to_be_visible()
+
+
+def replace_csv_response(page: Page, filename: str, body: str, status: int = 200) -> None:
+    page.route(
+        f"**/{filename}",
+        lambda route: route.fulfill(
+            status=status,
+            content_type="text/csv",
+            body=body,
+        ),
+    )
 
 
 def test_season_wheel_loads_six_seasons(clean_page: Page) -> None:
@@ -173,6 +187,186 @@ def test_csv_network_failure_shows_load_error(
     expect(clean_page.get_by_text("Data could not be loaded.")).to_be_visible()
 
 
+def test_csv_http_error_shows_load_error(clean_page: Page, app_url: str) -> None:
+    replace_csv_response(clean_page, "season_data_master.csv", "Not found", status=404)
+    clean_page.goto(app_url)
+
+    expect(clean_page.get_by_text("Data could not be loaded.")).to_be_visible()
+
+
+def test_empty_csv_shows_load_error(clean_page: Page, app_url: str) -> None:
+    replace_csv_response(clean_page, "season_data_master.csv", "")
+    clean_page.goto(app_url)
+
+    expect(clean_page.get_by_text("Data could not be loaded.")).to_be_visible()
+
+
+def test_csv_missing_required_columns_shows_load_error(
+    clean_page: Page,
+    app_url: str,
+) -> None:
+    replace_csv_response(clean_page, "season_data_master.csv", "season_name\nBirak")
+    clean_page.goto(app_url)
+
+    expect(clean_page.get_by_text("Data could not be loaded.")).to_be_visible()
+
+
+def test_malformed_csv_shows_load_error(clean_page: Page, app_url: str) -> None:
+    malformed_csv = (
+        "season_id,season_name,season_info1,season_info2,season_months,season_weather\n"
+        's1,"Birak,Young season,First summer,Dec-Jan,Hot'
+    )
+    replace_csv_response(clean_page, "season_data_master.csv", malformed_csv)
+    clean_page.goto(app_url)
+
+    expect(clean_page.get_by_text("Data could not be loaded.")).to_be_visible()
+
+
+def test_failed_photo_uses_placeholder(clean_page: Page) -> None:
+    clean_page.route("**/species_photos/**", lambda route: route.abort())
+    open_species_page(clean_page)
+
+    first_photo = clean_page.locator(".species-photo").first
+    expect(first_photo).to_have_attribute("src", re.compile(r"^data:image/svg\+xml"))
+
+
+def test_species_with_missing_optional_fields_use_fallbacks(
+    clean_page: Page,
+) -> None:
+    headers = [
+        "species_id",
+        "species_name",
+        "category",
+        "i6",
+        "i5",
+        "i1",
+        "i2",
+        "i3",
+        "i4",
+        "s1",
+        "s2",
+        "s3",
+        "s4",
+        "s5",
+        "s6",
+    ]
+    values = {header: "" for header in headers}
+    values.update(
+        {
+            "species_id": "test-species",
+            "species_name": "Test plant",
+            "category": "bush_food",
+            "i1": "y",
+            "s1": "y",
+        }
+    )
+    csv_body = ",".join(headers) + "\n" + ",".join(values[header] for header in headers)
+    replace_csv_response(clean_page, "bush_food_data_master.csv", csv_body)
+    clean_page.reload()
+    open_species_page(clean_page)
+
+    expect(clean_page.locator(".species-body h3")).to_have_text("Test plant")
+    expect(clean_page.locator(".common-name")).to_have_text("No common name recorded")
+    expect(clean_page.locator(".species-body")).to_contain_text("Noongar name: Not recorded")
+    expect(clean_page.locator(".species-body")).to_contain_text(
+        "No information supplied."
+    )
+    expect(clean_page.locator(".species-photo")).to_have_attribute(
+        "src", re.compile(r"^data:image/svg\+xml")
+    )
+
+
+def test_storage_write_failure_is_announced_without_crashing(
+    clean_page: Page,
+) -> None:
+    open_species_page(clean_page)
+    page_errors = []
+    clean_page.on("pageerror", lambda error: page_errors.append(str(error)))
+    clean_page.evaluate(
+        """() => {
+          const originalSetItem = Storage.prototype.setItem;
+          Storage.prototype.setItem = function (key, value) {
+            if (key === 'noongarPlantFinderChecked') {
+              throw new DOMException('Storage quota exceeded', 'QuotaExceededError');
+            }
+            return originalSetItem.call(this, key, value);
+          };
+        }"""
+    )
+
+    clean_page.locator(".found-toggle input").first.evaluate(
+        "(checkbox) => checkbox.click()"
+    )
+
+    expect(clean_page.get_by_role("status")).to_contain_text(
+        "could not be saved on this device"
+    )
+    assert page_errors == []
+
+
+def test_every_season_area_category_combination_renders(
+    clean_page: Page,
+) -> None:
+    categories = [
+        ("bush_food", "Bush Food", "bush_food_data_master.csv"),
+        ("bush_medicine", "Bush Medicine", "bush_med_data_master.csv"),
+        ("wildflower", "Wildflowers", "wildflower_data_master.csv"),
+    ]
+    species_rows = []
+    for category, _, filename in categories:
+        with (PROJECT_ROOT / filename).open(
+            encoding="utf-8-sig", newline=""
+        ) as csv_file:
+            species_rows.extend(
+                (category, row) for row in csv.DictReader(csv_file)
+            )
+
+    season_ids = [f"s{index}" for index in range(1, 7)]
+    ilua_ids = [f"i{index}" for index in range(1, 7)]
+    combinations_checked = 0
+
+    for season_index, season_id in enumerate(season_ids):
+        for ilua_index, ilua_id in enumerate(ilua_ids):
+            for category_index, (category, category_label, _) in enumerate(categories):
+                if combinations_checked:
+                    clean_page.get_by_role("button", name="Home").click(force=True)
+
+                clean_page.locator(".season-wedge").nth(season_index).click(force=True)
+                clean_page.locator(".ilua-node").nth(ilua_index).click(force=True)
+                clean_page.locator(".category-card").nth(category_index).click(force=True)
+
+                expect(clean_page.locator(".species-list")).to_be_visible()
+                expect(clean_page.locator(".selection-summary")).to_contain_text(
+                    category_label
+                )
+                expected_species = sorted(
+                    (
+                        row.get("species_name") or "Unknown species"
+                        for row_category, row in species_rows
+                        if row_category == category
+                        and row.get(season_id, "").lower() == "y"
+                        and row.get(ilua_id, "").lower() == "y"
+                    ),
+                    key=str.casefold,
+                )
+                actual_species = clean_page.locator(
+                    ".species-body h3"
+                ).all_text_contents()
+                assert actual_species == expected_species, (
+                    f"Species mismatch for season={season_id}, "
+                    f"ILUA={ilua_id}, category={category}. "
+                    f"Expected {expected_species}; got {actual_species}."
+                )
+
+                if expected_species:
+                    expect(clean_page.locator(".empty-state")).to_have_count(0)
+                else:
+                    expect(clean_page.locator(".empty-state")).to_be_visible()
+                combinations_checked += 1
+
+    assert combinations_checked == len(season_ids) * len(ilua_ids) * len(categories)
+
+
 def test_back_and_home_navigation_work(clean_page: Page) -> None:
     open_species_page(clean_page)
 
@@ -192,27 +386,3 @@ def test_main_navigation_has_no_uncaught_javascript_errors(
     open_species_page(clean_page)
 
     assert errors == []
-
-
-### Automated testing results:
-
-#================================= test session starts ==================================
-#platform win32 -- Python 3.14.6, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\chell\AppData\Local\Programs\Python\Python314\python.exe
-#cachedir: .pytest_cache
-#rootdir: C:\Users\chell\OneDrive - UWA\CITS1501 Project\Project
-#plugins: base-url-2.1.0, playwright-0.9.0
-#collected 11 items                                                                      
-
-#app_tests.py::test_season_wheel_loads_six_seasons[chromium] PASSED                [  9%]
-#app_tests.py::test_navigation_reaches_species_list[chromium] PASSED               [ 18%]
-#app_tests.py::test_species_are_sorted_alphabetically[chromium] PASSED             [ 27%]
-#app_tests.py::test_found_filter_shows_empty_message_when_none_are_found[chromium] PASSED[ 36%]
-#app_tests.py::test_not_found_filter_only_shows_unchecked_species[chromium] PASSED [ 45%]
-#app_tests.py::test_checking_species_removes_it_from_not_found_filter[chromium] PASSED [ 54%]
-#app_tests.py::test_found_checkbox_persists_after_reload[chromium] PASSED          [ 63%]
-#app_tests.py::test_malformed_saved_state_does_not_break_startup[chromium] PASSED  [ 72%]
-#app_tests.py::test_csv_network_failure_shows_load_error[chromium] PASSED          [ 81%]
-#app_tests.py::test_back_and_home_navigation_work[chromium] PASSED                 [ 90%]
-#app_tests.py::test_main_navigation_has_no_uncaught_javascript_errors[chromium] PASSED [100%]
-
-#================================== 11 passed in 9.06s ==================================

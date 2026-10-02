@@ -34,6 +34,7 @@ const STATE = {
   selectedILUA: '',
   selectedCategory: '',
   foundFilter: 'all',
+  storageWarning: false,
   checked: loadCheckedState()
 };
 
@@ -313,6 +314,11 @@ function renderSpeciesView() {
           <option value="not-found" ${STATE.foundFilter === 'not-found' ? 'selected' : ''}>Not found</option>
         </select>
       </div>
+      ${STATE.storageWarning ? `
+        <p class="storage-warning" role="status">
+          Found selections could not be saved on this device. Changes will last only until this page is closed.
+        </p>
+      ` : ''}
 
       <div class="species-list">
         ${species.length ? species.map((item) => {
@@ -421,11 +427,18 @@ function bindSpeciesEvents() {
     checkbox.addEventListener('change', (event) => {
       const speciesId = event.target.dataset.speciesId;
       STATE.checked[speciesId] = event.target.checked;
-      localStorage.setItem('noongarPlantFinderChecked', JSON.stringify(STATE.checked));
+      const hadStorageWarning = STATE.storageWarning;
+      try {
+        localStorage.setItem('noongarPlantFinderChecked', JSON.stringify(STATE.checked));
+        STATE.storageWarning = false;
+      } catch (error) {
+        console.error('Could not save Found selections to browser storage.', error);
+        STATE.storageWarning = true;
+      }
 
       const matchesFoundFilter = STATE.foundFilter === 'all' ||
         STATE.checked[speciesId] === (STATE.foundFilter === 'found');
-      if (!matchesFoundFilter) render();
+      if (!matchesFoundFilter || STATE.storageWarning || hadStorageWarning) render();
     });
   });
 }
@@ -527,8 +540,52 @@ function buildSpeciesCatalog(foodRows, medRows, wildRows) {
 // Fetches and parses local CSV files into JavaScript objects for the app.
 function fetchCSV(filePath) {
   return fetch(filePath)
-    .then((response) => response.text())
-    .then((text) => parseCSV(text));
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Failed to load ${filePath}: HTTP ${response.status}`);
+      }
+      return response.text();
+    })
+    .then((text) => {
+      const rows = parseCSV(text);
+      validateCSVRows(filePath, rows);
+      return rows;
+    });
+}
+
+function validateCSVRows(filePath, rows) {
+  if (!rows.length) {
+    throw new Error(`${filePath} is empty or has no data rows.`);
+  }
+
+  const requiredHeaders = {
+    'season_data_master.csv': [
+      'season_id', 'season_name', 'season_info1', 'season_info2',
+      'season_months', 'season_weather'
+    ],
+    'ilua_data_master.csv': ['ilua_id', 'ilua_name', 'ilua_info'],
+    'bush_food_data_master.csv': [
+      'species_id', 'species_name', 'category',
+      ...SEASON_ORDER, ...ILUA_ORDER
+    ],
+    'bush_med_data_master.csv': [
+      'species_id', 'species_name', 'category',
+      ...SEASON_ORDER, ...ILUA_ORDER
+    ],
+    'wildflower_data_master.csv': [
+      'species_id', 'species_name', 'category',
+      ...SEASON_ORDER, ...ILUA_ORDER
+    ]
+  }[filePath];
+
+  if (!requiredHeaders) return;
+
+  const missingHeaders = requiredHeaders.filter(
+    (header) => !Object.prototype.hasOwnProperty.call(rows[0], header)
+  );
+  if (missingHeaders.length) {
+    throw new Error(`${filePath} is missing required columns: ${missingHeaders.join(', ')}`);
+  }
 }
 
 // Parses the CSV format used by the project, including quoted values and multiline content.
@@ -566,6 +623,10 @@ function parseCSV(text) {
     } else {
       current += char;
     }
+  }
+
+  if (inQuotes) {
+    throw new Error('Malformed CSV: unmatched quote.');
   }
 
   if (current.length || row.length) {

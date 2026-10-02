@@ -435,6 +435,13 @@ button, input, a {
   font: inherit;
 }
 
+.storage-warning {
+  margin: -14px 0 0;
+  color: #8b2f20;
+  font-weight: 700;
+  text-align: right;
+}
+
 .list-top-button {
   align-self: center;
   margin-top: 4px;
