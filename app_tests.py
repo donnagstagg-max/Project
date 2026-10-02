@@ -1,5 +1,6 @@
 #### Script for automated testing, edge cases, error handling, and performance
 
+import csv
 import re
 import csv
 import socket
@@ -93,6 +94,68 @@ def replace_csv_response(page: Page, filename: str, body: str, status: int = 200
 
 def test_season_wheel_loads_six_seasons(clean_page: Page) -> None:
     expect(clean_page.locator(".season-wedge")).to_have_count(6)
+
+
+def test_home_found_species_button_opens_empty_state(clean_page: Page) -> None:
+    button = clean_page.get_by_role(
+        "button",
+        name="View all species found to date",
+    )
+    expect(button).to_be_visible()
+    button.click()
+
+    expect(clean_page.get_by_role("heading", name="Species Found to Date")).to_be_visible()
+    expect(clean_page.locator(".empty-state")).to_have_text(
+        "No species have been marked Found yet."
+    )
+    expect(clean_page.locator("#found-filter")).to_have_count(0)
+
+
+def test_found_to_date_list_includes_all_categories_and_updates_when_unchecked(
+    clean_page: Page,
+) -> None:
+    sources = [
+        ("bush_food", "Bush Food", "bush_food_data_master.csv"),
+        ("bush_medicine", "Bush Medicine", "bush_med_data_master.csv"),
+        ("wildflower", "Wildflowers", "wildflower_data_master.csv"),
+    ]
+    found_records = []
+    for category, label, filename in sources:
+        with (PROJECT_ROOT / filename).open(
+            encoding="utf-8-sig", newline=""
+        ) as csv_file:
+            row = next(csv.DictReader(csv_file))
+        found_records.append((row["species_id"], row["species_name"], label))
+
+    found_state = {species_id: True for species_id, _, _ in found_records}
+    clean_page.evaluate(
+        "(state) => localStorage.setItem('noongarPlantFinderChecked', JSON.stringify(state))",
+        found_state,
+    )
+    clean_page.reload()
+    clean_page.get_by_role("button", name="View all species found to date").click()
+
+    displayed_names = clean_page.locator(".species-body h3").all_text_contents()
+    assert displayed_names == sorted(
+        (name for _, name, _ in found_records),
+        key=str.casefold,
+    )
+    expect(clean_page.locator("#found-filter")).to_have_count(0)
+    expect(clean_page.locator(".selection-summary")).to_have_count(0)
+
+    for species_id, _, category_label in found_records:
+        card = clean_page.locator(
+            ".species-card",
+            has=clean_page.locator(f'[data-species-id="{species_id}"]'),
+        )
+        expect(card.locator(".species-category")).to_have_text(category_label)
+        expect(card.locator(".found-toggle input")).to_be_checked()
+
+    clean_page.locator(".found-toggle input").first.evaluate(
+        "(checkbox) => checkbox.click()"
+    )
+    expect(clean_page.locator(".species-card")).to_have_count(2)
+    expect(clean_page.locator(".found-toggle input:checked")).to_have_count(2)
 
 
 def test_navigation_reaches_species_list(clean_page: Page) -> None:

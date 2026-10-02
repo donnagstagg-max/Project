@@ -33,6 +33,8 @@ If port 8000 is already in use, start the server on another port, such as 8001, 
 
 Use **Back** to return one step and change the previous selection. Use **Home** to return to the season wheel and clear the current season, area, and category selections. Your saved Found checkboxes are not cleared by Home.
 
+On the season wheel home page, select **View all species found to date** to see every species you have marked Found across all seasons, ILUA areas, and categories. You can uncheck species from this list as well.
+
 Use **Back to top of list** at the bottom of the species view to return to the start of a long list.
 
 ## Troubleshooting

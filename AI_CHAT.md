@@ -1193,3 +1193,12 @@ The app validates CSV responses: failed HTTP statuses, empty data, missing requi
 The pytest/Playwright suite has 19 tests covering navigation, filtering, alphabetical ordering, persistence, malformed saved JSON, CSV network/HTTP/format/schema failures, missing optional fields, broken photos, storage write failure, JavaScript errors, and every one of the 108 season/ILUA/category selections. The all-combinations test now compares the exact displayed species names against expected names independently derived from each source CSV's season and ILUA presence flags. The most recent run recorded 19 passing tests.
 
 Together, this is meaningful evidence that key expected behavior and known failure cases work; it does not prove the app cannot fail. Remaining limits include limited tests for CSV quoting/row-shape variants, valid JSON with an unexpected structure, duplicate or invalid source records, platform/browser differences, and the semantic correctness of the source CSV assignments themselves. The exact-assignment test verifies the app follows the CSV flags; it cannot prove the CSV data is factually correct.
+
+### User
+Create a button on the bottom-left of the 'Home' page, beneath the season wheel, that allows users to generate a full species list of every species found to date without any season, ILUA or category filtering.
+
+### Assistant
+Added a bottom-left home-screen button labelled “View all species found to date”. It opens an alphabetized list of all species currently checked as Found, across the complete catalog without season, ILUA, or category selection filters. The list shows each species category and supports photo enlargement and unchecking; removing the checkmark removes that species from this list. If nothing has been marked Found, the view displays a clear empty-state message. Updated the README usage instructions and added tests for the empty state, multi-category unfiltered contents, and immediate removal when a species is unchecked.
+
+### Verification
+Ran the full browser suite in the project virtual environment: **21 passed** in 21.69 seconds. `git diff --check` passed.

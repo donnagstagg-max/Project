@@ -104,6 +104,12 @@ function render() {
   if (view === 'species') {
     appView.innerHTML = renderSpeciesView();
     bindSpeciesEvents();
+    return;
+  }
+
+  if (view === 'foundSpecies') {
+    appView.innerHTML = renderFoundSpeciesView();
+    bindSpeciesEvents(true);
   }
 }
 
@@ -193,8 +199,9 @@ function renderSeasonView() {
           </div>
         </div>
       </div>
+      <button class="found-species-button" type="button">View all species found to date</button>
     </div>
-  `;
+    `;
 }
 
 // Creates the ILUA selection screen. It presents each ILUA area as a selectable map node.
@@ -320,50 +327,91 @@ function renderSpeciesView() {
         </p>
       ` : ''}
 
-      <div class="species-list">
-        ${species.length ? species.map((item) => {
-          const checked = Boolean(STATE.checked[item.id]);
-          const photoSrc = item.photo_hlink || placeholderImage(item.common_name || item.species_name);
-
-          return `
-            <article class="species-card">
-              <button class="species-photo-button" type="button" aria-label="Enlarge photo: ${item.species_name}" data-photo-alt="${item.species_name}">
-                <img class="species-photo" src="${photoSrc}" alt="${item.species_name}" onerror="this.onerror=null;this.src='${placeholderImage(item.common_name || item.species_name)}'" />
-              </button>
-              <div class="species-body">
-                <h3>${item.species_name}</h3>
-                <p class="subtitle common-name">${item.common_name || 'No common name recorded'}</p>
-                ${['wildflower', 'wildflowers'].includes(item.category) ? '' : `<p class="subtitle">Noongar name: ${item.noongar_name || 'Not recorded'}</p>`}
-                <p>${item.species_info || 'No additional species information available.'}</p>
-              </div>
-              <label class="found-toggle">
-                <input type="checkbox" data-species-id="${item.id}" ${checked ? 'checked' : ''} />
-                <span>Found</span>
-              </label>
-            </article>
-          `;
-        }).join('') : `
-          <div class="empty-state">
-            ${allSpecies.length
-              ? `No species marked ${STATE.foundFilter === 'found' ? 'Found' : 'Not found'} in this selection.`
-              : 'No species match this combination of season, ILUA area, and category.'}
-          </div>
-        `}
-      </div>
+      ${renderSpeciesList(species, allSpecies.length
+        ? `No species marked ${STATE.foundFilter === 'found' ? 'Found' : 'Not found'} in this selection.`
+        : 'No species match this combination of season, ILUA area, and category.')}
       ${species.length ? '<button class="list-top-button" type="button">Back to top of list</button>' : ''}
-      ${species.length ? `
-        <dialog class="photo-dialog" aria-label="Enlarged species photo">
-          <button class="photo-dialog-close" type="button" aria-label="Close enlarged photo">Close</button>
-          <img class="photo-dialog-image" alt="" />
-          <p class="photo-dialog-caption"></p>
-        </dialog>
-      ` : ''}
+      ${renderPhotoDialog(species.length > 0)}
     </div>
   `;
 }
 
+// Shows every species marked Found, without applying season, ILUA, or category filters.
+function renderFoundSpeciesView() {
+  const species = speciesCatalog
+    .filter((item) => Boolean(STATE.checked[item.id]))
+    .sort((first, second) => first.species_name.localeCompare(
+      second.species_name,
+      undefined,
+      { sensitivity: 'base' }
+    ));
+
+  return `
+    <div class="view found-species-view">
+      <div class="view-header">
+        <h2>Species Found to Date</h2>
+        <p>All species you have marked Found, across every season, ILUA area, and category.</p>
+      </div>
+      ${STATE.storageWarning ? `
+        <p class="storage-warning" role="status">
+          Found selections could not be saved on this device. Changes will last only until this page is closed.
+        </p>
+      ` : ''}
+      ${renderSpeciesList(species, 'No species have been marked Found yet.', true)}
+      ${species.length ? '<button class="list-top-button" type="button">Back to top of list</button>' : ''}
+      ${renderPhotoDialog(species.length > 0)}
+    </div>
+  `;
+}
+
+function renderSpeciesList(species, emptyMessage, showCategory = false) {
+  return `
+    <div class="species-list">
+      ${species.length ? species.map((item) => {
+        const checked = Boolean(STATE.checked[item.id]);
+        const photoSrc = item.photo_hlink || placeholderImage(item.common_name || item.species_name);
+        const categoryName = CATEGORY_INFO[item.category]?.label || 'Other';
+
+        return `
+          <article class="species-card">
+            <button class="species-photo-button" type="button" aria-label="Enlarge photo: ${item.species_name}" data-photo-alt="${item.species_name}">
+              <img class="species-photo" src="${photoSrc}" alt="${item.species_name}" onerror="this.onerror=null;this.src='${placeholderImage(item.common_name || item.species_name)}'" />
+            </button>
+            <div class="species-body">
+              <h3>${item.species_name}</h3>
+              ${showCategory ? `<p class="subtitle species-category">${categoryName}</p>` : ''}
+              <p class="subtitle common-name">${item.common_name || 'No common name recorded'}</p>
+              ${['wildflower', 'wildflowers'].includes(item.category) ? '' : `<p class="subtitle">Noongar name: ${item.noongar_name || 'Not recorded'}</p>`}
+              <p>${item.species_info || 'No additional species information available.'}</p>
+            </div>
+            <label class="found-toggle">
+              <input type="checkbox" data-species-id="${item.id}" ${checked ? 'checked' : ''} />
+              <span>Found</span>
+            </label>
+          </article>
+        `;
+      }).join('') : `<div class="empty-state">${emptyMessage}</div>`}
+    </div>
+  `;
+}
+
+function renderPhotoDialog(hasSpecies) {
+  return hasSpecies ? `
+    <dialog class="photo-dialog" aria-label="Enlarged species photo">
+      <button class="photo-dialog-close" type="button" aria-label="Close enlarged photo">Close</button>
+      <img class="photo-dialog-image" alt="" />
+      <p class="photo-dialog-caption"></p>
+    </dialog>
+  ` : '';
+}
+
 // Attaches click handlers to each interactive element in the current view.
 function bindSeasonEvents() {
+  document.querySelector('.found-species-button')?.addEventListener('click', () => {
+    STATE.navStack.push('foundSpecies');
+    render();
+  });
+
   document.querySelectorAll('.season-wedge').forEach((wedge) => {
     wedge.style.cursor = 'pointer';
     wedge.addEventListener('click', () => {
@@ -394,7 +442,7 @@ function bindCategoryEvents() {
   });
 }
 
-function bindSpeciesEvents() {
+function bindSpeciesEvents(foundOnly = false) {
   document.querySelector('#found-filter')?.addEventListener('change', (event) => {
     STATE.foundFilter = event.target.value;
     render();
@@ -438,7 +486,14 @@ function bindSpeciesEvents() {
 
       const matchesFoundFilter = STATE.foundFilter === 'all' ||
         STATE.checked[speciesId] === (STATE.foundFilter === 'found');
-      if (!matchesFoundFilter || STATE.storageWarning || hadStorageWarning) render();
+      if (
+        (foundOnly && !STATE.checked[speciesId]) ||
+        (!foundOnly && !matchesFoundFilter) ||
+        STATE.storageWarning ||
+        hadStorageWarning
+      ) {
+        render();
+      }
     });
   });
 }

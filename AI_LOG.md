@@ -97,3 +97,4 @@ This log records substantive requests made in the current session. Conversationa
 - "Now considering the changes made and new tests created, what can you say about this project in regards to edge cases, error handling, and reliable application behaviour?"
 - "Please add a test that verifies every species is assigned to the correct combinations"
 - "Clearly explain how this app handles edge cases, error handling, and reliable application behaviour"
+- "Create a button on the bottom-left of the 'Home' page, beneath the season wheel, that allows users to generate a full species list of every species found to date without any season, ILUA or category filtering."

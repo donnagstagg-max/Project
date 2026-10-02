@@ -150,6 +150,23 @@ button, input, a {
   overflow: hidden;
 }
 
+.found-species-button {
+  align-self: flex-start;
+  margin-top: 4px;
+  border: 0;
+  border-radius: 8px;
+  padding: 10px 16px;
+  background: var(--primary);
+  color: white;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.found-species-button:hover {
+  background: var(--primary-dark);
+}
+
 .season-svg {
   display: block;
   width: 100%;
